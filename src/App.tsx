@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useAuth } from "react-oidc-context";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
+import About from "./components/About";
 import Login from "./components/Login";
 import PaperViewer from "./components/PaperViewer";
 import PublishedPapers from "./components/PublishedPapers";
@@ -89,20 +90,31 @@ const App = () => {
                 <div className="hero-text">
                   <p className="eyebrow">Hackathon Portal</p>
                   <h1>Dementia X Change</h1>
+                  <p className="home-topline">
+                    We believe that dementia research should be available to all, immediately,
+                    without barriers, for free.
+                  </p>
+                  <div className="home-links">
+                    <Link className="home-link" to="/about">
+                      Read the mission
+                    </Link>
+                  </div>
                   <p className="subhead">
                     Trade rough ideas for real-world momentum. Drop in a manuscript draft and we
                     will shape the next steps together.
                   </p>
                 </div>
-                <button
-                  className="logout-button"
-                  type="button"
-                  onClick={() => auth.signoutRedirect()}
-                >
-                  Sign out
-                </button>
-                <div className="logo-wrap">
-                  <img src="/rad_logo.svg" alt="Dementia X Change logo" />
+                <div className="logo-container">
+                  <button
+                    className="logout-button"
+                    type="button"
+                    onClick={() => auth.signoutRedirect()}
+                  >
+                    Sign out
+                  </button>
+                  <div className="logo-wrap">
+                    <img src="/rad_logo.svg" alt="Dementia X Change logo" />
+                  </div>
                 </div>
               </header>
 
@@ -156,6 +168,10 @@ const App = () => {
             <Navigate to="/login" replace />
           )
         }
+      />
+      <Route
+        path="/about"
+        element={auth.isAuthenticated ? <About /> : <Navigate to="/login" replace />}
       />
       <Route
         path="/papers/:paperId"
