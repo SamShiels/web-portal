@@ -10,67 +10,67 @@ import Skeleton from "./Skeleton";
  */
 const RULESETS: Record<string, Array<{ id: number; area: string; rule: string }>> = {
   arrive: [
-    { id: 1, area: "Study Design & Sample Size", rule: "Provide brief details of the groups being compared (with rationale) and the experimental unit (e.g., single animal, cage)." },
-    { id: 2, area: "Study Design & Sample Size", rule: "Specify the exact number of experimental units allocated and used, and explain how the sample size was decided (e.g., a priori calculation)." },
-    { id: 3, area: "Rigour & Validity", rule: "Describe criteria for including/excluding animals or data (specifying if established a priori), report any exclusions with reasons, and state the exact n for each analysis." },
-    { id: 4, area: "Rigour & Validity", rule: "State if randomisation was used, the method of sequence generation, and strategies to minimize confounders (e.g., location, order)." },
-    { id: 5, area: "Rigour & Validity", rule: "Describe who was blinded to group allocation during allocation, conduct, outcome assessment, and data analysis." },
-    { id: 6, area: "Experimental Details", rule: "Provide species-appropriate details (strain, sex, age/developmental stage, weight) and provenance/health/genotype information." },
-    { id: 7, area: "Experimental Details", rule: "Describe procedures in enough detail to allow replication, including what, how, when, where, and why for each group." },
-    { id: 8, area: "Analysis & Results", rule: "Clearly define all outcomes and specify the primary outcome used for sample size calculation." },
-    { id: 9, area: "Analysis & Results", rule: "Detail the statistical methods and software used, including how assumptions were assessed." },
-    { id: 10, area: "Analysis & Results", rule: "Report summary statistics with variability (e.g., mean/SD) and effect sizes with confidence intervals for each experiment." }
+    { id: 1, area: "Study Design & Sample Size", rule: "🐾 Provide brief details of the groups being compared (with rationale) and the experimental unit (e.g., single animal, cage)." },
+    { id: 2, area: "Study Design & Sample Size", rule: "🔢 Specify the exact number of experimental units allocated and used, and explain how the sample size was decided (e.g., a priori calculation)." },
+    { id: 3, area: "Rigour & Validity", rule: "✂️ Describe criteria for including/excluding animals or data (specifying if established a priori), report any exclusions with reasons, and state the exact n for each analysis." },
+    { id: 4, area: "Rigour & Validity", rule: "🎲 State if randomisation was used, the method of sequence generation, and strategies to minimize confounders (e.g., location, order)." },
+    { id: 5, area: "Rigour & Validity", rule: "🙈 Describe who was blinded to group allocation during allocation, conduct, outcome assessment, and data analysis." },
+    { id: 6, area: "Experimental Details", rule: "🧬 Provide species-appropriate details (strain, sex, age/developmental stage, weight) and provenance/health/genotype information." },
+    { id: 7, area: "Experimental Details", rule: "📋 Describe procedures in enough detail to allow replication, including what, how, when, where, and why for each group." },
+    { id: 8, area: "Analysis & Results", rule: "🎯 Clearly define all outcomes and specify the primary outcome used for sample size calculation." },
+    { id: 9, area: "Analysis & Results", rule: "💻 Detail the statistical methods and software used, including how assumptions were assessed." },
+    { id: 10, area: "Analysis & Results", rule: "📊 Report summary statistics with variability (e.g., mean/SD) and effect sizes with confidence intervals for each experiment." }
   ],
   consort: [
-    { id: 1, area: "Title, Abstract, & Open Science", rule: "Identify as a randomised trial and provide a structured summary of design, methods, results, and conclusions." },
-    { id: 2, area: "Title, Abstract, & Open Science", rule: "Provide trial registry details, access to the protocol/SAP, and instructions for accessing de-identified participant data and code." },
-    { id: 3, area: "Title, Abstract, & Open Science", rule: "Disclose all funding sources, funder roles, and author conflicts of interest." },
-    { id: 4, area: "Introduction", rule: "Explain the scientific background and rationale." },
-    { id: 5, area: "Introduction", rule: "State specific objectives related to both benefits and harms." },
-    { id: 6, area: "Methods", rule: "Provide details of patient or public involvement in the trial." },
-    { id: 7, area: "Methods", rule: "Describe design type (e.g., parallel, crossover), allocation ratio, any protocol changes, and trial settings/locations." },
-    { id: 8, area: "Methods", rule: "State eligibility criteria for participants/sites and provide intervention/comparator details sufficient for replication." },
-    { id: 9, area: "Methods", rule: "Define pre-specified primary/secondary outcomes (metric, aggregation, time point) and how harms were defined/assessed." },
-    { id: 10, area: "Methods", rule: "Explain sample size determination and any interim analysis or stopping rules." },
-    { id: 11, area: "Methods", rule: "Describe the sequence generation, the allocation concealment mechanism, and the implementation process." },
-    { id: 12, area: "Methods", rule: "State who was blinded and describe how it was achieved and maintained." },
-    { id: 13, area: "Methods", rule: "Describe methods for primary/secondary outcomes, the analysis population definition, handling of missing data, and additional analyses." },
-    { id: 14, area: "Results", rule: "Report numbers assigned, receiving treatment, and analysed via flow diagram, including losses and exclusions." },
-    { id: 15, area: "Results", rule: "State recruitment dates, reasons for trial ending, treatment fidelity/adherence, and concomitant care." },
-    { id: 16, area: "Results", rule: "Provide a table of baseline demographic and clinical characteristics." },
-    { id: 17, area: "Results", rule: "Report numbers included in each analysis, estimated effect sizes with precision (e.g., 95% CI), all harms, and ancillary analyses." },
-    { id: 18, area: "Discussion", rule: "Provide an interpretation consistent with results, balancing benefits and harms." },
-    { id: 19, area: "Discussion", rule: "Discuss sources of potential bias, imprecision, and generalisability." }
+    { id: 1, area: "Title, Abstract, & Open Science", rule: "📝 Identify as a randomised trial and provide a structured summary of design, methods, results, and conclusions." },
+    { id: 2, area: "Title, Abstract, & Open Science", rule: "🌐 Provide trial registry details, access to the protocol/SAP, and instructions for accessing de-identified participant data and code." },
+    { id: 3, area: "Title, Abstract, & Open Science", rule: "💰 Disclose all funding sources, funder roles, and author conflicts of interest." },
+    { id: 4, area: "Introduction", rule: "📖 Explain the scientific background and rationale." },
+    { id: 5, area: "Introduction", rule: "⚖️ State specific objectives related to both benefits and harms." },
+    { id: 6, area: "Methods", rule: "👥 Provide details of patient or public involvement in the trial." },
+    { id: 7, area: "Methods", rule: "📐 Describe design type (e.g., parallel, crossover), allocation ratio, any protocol changes, and trial settings/locations." },
+    { id: 8, area: "Methods", rule: "🧪 State eligibility criteria for participants/sites and provide intervention/comparator details sufficient for replication." },
+    { id: 9, area: "Methods", rule: "⚠️ Define pre-specified primary/secondary outcomes (metric, aggregation, time point) and how harms were defined/assessed." },
+    { id: 10, area: "Methods", rule: "🧮 Explain sample size determination and any interim analysis or stopping rules." },
+    { id: 11, area: "Methods", rule: "🔐 Explain the sequence generation, the allocation concealment mechanism, and the implementation process." },
+    { id: 12, area: "Methods", rule: "🕶️ State who was blinded and describe how it was achieved and maintained." },
+    { id: 13, area: "Methods", rule: "🧹 Describe methods for primary/secondary outcomes, the analysis population definition, handling of missing data, and additional analyses." },
+    { id: 14, area: "Results", rule: "📉 Report numbers assigned, receiving treatment, and analysed via flow diagram, including losses and exclusions." },
+    { id: 15, area: "Results", rule: "📅 State recruitment dates, reasons for trial ending, treatment fidelity/adherence, and concomitant care." },
+    { id: 16, area: "Results", rule: "📋 Provide a table of baseline demographic and clinical characteristics." },
+    { id: 17, area: "Results", rule: "📏 Report numbers included in each analysis, estimated effect sizes with precision (e.g., 95% CI), all harms, and ancillary analyses." },
+    { id: 18, area: "Discussion", rule: "🧐 Provide an interpretation consistent with results, balancing benefits and harms." },
+    { id: 19, area: "Discussion", rule: "🔍 Discuss sources of potential bias, imprecision, and generalisability." }
   ],
   strobe: [
-    { id: 1, area: "Title, Abstract, & Introduction", rule: "Indicate study design and provide an informative summary of what was done and found." },
-    { id: 2, area: "Title, Abstract, & Introduction", rule: "Explain the scientific rationale for the investigation." },
-    { id: 3, area: "Title, Abstract, & Introduction", rule: "State specific objectives and any prespecified hypotheses." },
-    { id: 4, area: "Methods", rule: "Present key elements of the study design early." },
-    { id: 5, area: "Methods", rule: "Describe locations, relevant dates, recruitment periods, and follow-up." },
-    { id: 6, area: "Methods", rule: "State eligibility criteria and selection methods." },
-    { id: 7, area: "Methods", rule: "Describe follow-up methods (cohort studies)." },
-    { id: 8, area: "Methods", rule: "Describe case/control selection and rationale (case-control studies)." },
-    { id: 9, area: "Methods", rule: "Give matching criteria and numbers (matched studies)." },
-    { id: 10, area: "Methods", rule: "Define all outcomes, exposures, predictors, confounders, and modifiers." },
-    { id: 11, area: "Methods", rule: "Give sources and measurement methods for each variable." },
-    { id: 12, area: "Methods", rule: "Describe efforts to address potential sources of bias." },
-    { id: 13, area: "Methods", rule: "Explain how the study size was arrived at." },
-    { id: 14, area: "Methods", rule: "Explain how quantitative variables were handled or grouped in analyses." },
-    { id: 15, area: "Methods", rule: "Describe methods used for confounding, subgroups, and interactions." },
-    { id: 16, area: "Methods", rule: "Explain how missing data and loss to follow-up were addressed." },
-    { id: 17, area: "Methods", rule: "Describe any sensitivity analyses." },
-    { id: 18, area: "Results", rule: "Report numbers at each stage (eligible, included, etc.) and reasons for non-participation." },
-    { id: 19, area: "Results", rule: "Give participant characteristics and missing data per variable." },
-    { id: 20, area: "Results", rule: "Report outcome events or summary measures over time." },
-    { id: 21, area: "Results", rule: "Give unadjusted and confounder-adjusted estimates with precision (e.g., 95% CI)." },
-    { id: 22, area: "Results", rule: "Report category boundaries for continuous variables." },
-    { id: 23, area: "Results", rule: "Report subgroup, interaction, or sensitivity analyses." },
-    { id: 24, area: "Discussion & Other", rule: "Summarize findings relative to objectives." },
-    { id: 25, area: "Discussion & Other", rule: "Discuss bias (direction and magnitude) and imprecision." },
-    { id: 26, area: "Discussion & Other", rule: "Provide a cautious overall interpretation of results." },
-    { id: 27, area: "Discussion & Other", rule: "Discuss external validity." },
-    { id: 28, area: "Discussion & Other", rule: "State the source of funding and the role of funders." }
+    { id: 1, area: "Title, Abstract, & Introduction", rule: "📜 Indicate study design and provide an informative summary of what was done and found." },
+    { id: 2, area: "Title, Abstract, & Introduction", rule: "💡 Explain the scientific rationale for the investigation." },
+    { id: 3, area: "Title, Abstract, & Introduction", rule: "🎯 State specific objectives and any prespecified hypotheses." },
+    { id: 4, area: "Methods", rule: "🏗️ Present key elements of the study design early." },
+    { id: 5, area: "Methods", rule: "📍 Describe locations, relevant dates, recruitment periods, and follow-up." },
+    { id: 6, area: "Methods", rule: "🏁 State eligibility criteria and selection methods." },
+    { id: 7, area: "Methods", rule: "👣 Describe follow-up methods (cohort studies)." },
+    { id: 8, area: "Methods", rule: "👥 Describe case/control selection and rationale (case-control studies)." },
+    { id: 9, area: "Methods", rule: "👯 Give matching criteria and numbers (matched studies)." },
+    { id: 10, area: "Methods", rule: "🔢 Define all outcomes, exposures, predictors, confounders, and modifiers." },
+    { id: 11, area: "Methods", rule: "📏 Give sources and measurement methods for each variable." },
+    { id: 12, area: "Methods", rule: "🛡️ Describe efforts to address potential sources of bias." },
+    { id: 13, area: "Methods", rule: "🧮 Explain how the study size was arrived at." },
+    { id: 14, area: "Methods", rule: "📊 Explain how quantitative variables were handled or grouped in analyses." },
+    { id: 15, area: "Methods", rule: "🧩 Describe methods used for confounding, subgroups, and interactions." },
+    { id: 16, area: "Methods", rule: "🕳️ Explain how missing data and loss to follow-up were addressed." },
+    { id: 17, area: "Methods", rule: "🧪 Describe any sensitivity analyses." },
+    { id: 18, area: "Results", rule: "📉 Report numbers at each stage (eligible, included, etc.) and reasons for non-participation." },
+    { id: 19, area: "Results", rule: "👤 Give participant characteristics and missing data per variable." },
+    { id: 20, area: "Results", rule: "⏳ Report outcome events or summary measures over time." },
+    { id: 21, area: "Results", rule: "📈 Give unadjusted and confounder-adjusted estimates with precision (e.g., 95% CI)." },
+    { id: 22, area: "Results", rule: "✂️ Report category boundaries for continuous variables." },
+    { id: 23, area: "Results", rule: "🔍 Report subgroup, interaction, or sensitivity analyses." },
+    { id: 24, area: "Discussion & Other", rule: "📋 Summarize findings relative to objectives." },
+    { id: 25, area: "Discussion & Other", rule: "⚠️ Discuss bias (direction and magnitude) and imprecision." },
+    { id: 26, area: "Discussion & Other", rule: "🧐 Provide a cautious overall interpretation of results." },
+    { id: 27, area: "Discussion & Other", rule: "🌍 Discuss external validity." },
+    { id: 28, area: "Discussion & Other", rule: "💸 State the source of funding and the role of funders." }
   ]
 };
 
@@ -87,6 +87,19 @@ const PaperViewer = () => {
   const [llmMetrics, setLlmMetrics] = useState<LlmMetricsResponse["llm_metrics"] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedRules, setExpandedRules] = useState<Set<number>>(new Set());
+
+  const toggleRule = (ruleId: number) => {
+    setExpandedRules((prev) => {
+      const next = new Set(prev);
+      if (next.has(ruleId)) {
+        next.delete(ruleId);
+      } else {
+        next.add(ruleId);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -226,42 +239,58 @@ const PaperViewer = () => {
                   <div key={area} className="llm-area">
                     <h3>{area}</h3>
                     <ol className="llm-area-rules">
-                      {rules.map((rule) => (
-                        <li key={rule.id} className="llm-area-rule">
-                          <p className="llm-opinion-rule">{rule.rule}</p>
+                      {rules.map((rule) => {
+                        const isOpen = expandedRules.has(rule.id);
 
-                          {/* Each judge's opinion for THIS rule */}
-                          <div className="llm-judge-opinions">
-                            {llmMetrics &&
-                              Object.entries(llmMetrics).map(([, opinions], idx) => {
-                                const opinion = opinions[String(rule.id)];
-                                const label = JUDGE_LABELS[idx] ?? `Judge ${idx + 1}`;
-                                const avatar = JUDGE_AVATARS[idx % JUDGE_AVATARS.length];
+                        return (
+                          <li key={rule.id} className="llm-area-rule">
+                            <button
+                              type="button"
+                              className="llm-rule-toggle"
+                              onClick={() => toggleRule(rule.id)}
+                              aria-expanded={isOpen}
+                            >
+                              <span className="llm-rule-title">
+                                {rule.rule}
+                              </span>
+                              <span className="llm-rule-chevron">{isOpen ? "−" : "+"}</span>
+                            </button>
 
-                                return (
-                                  <div key={label} className="llm-judge-opinion">
-                                    <div className="llm-judge-header">
-                                      <img
-                                        className="llm-judge-avatar"
-                                        src={avatar}
-                                        alt={`${label} avatar`}
-                                      />
-                                      <div className="llm-judge-meta">
-                                        <p className="llm-judge-name">{label}</p>
-                                        <span className="llm-opinion-score">
-                                          Rating: {opinion?.rating ?? "—"}
-                                        </span>
+                            {isOpen ? (
+                              <div className="llm-judge-opinions">
+                                {llmMetrics &&
+                                  Object.entries(llmMetrics).map(([, opinions], idx) => {
+                                    const opinion = opinions[String(rule.id)];
+                                    const label = JUDGE_LABELS[idx] ?? `Judge ${idx + 1}`;
+                                    const avatar = JUDGE_AVATARS[idx % JUDGE_AVATARS.length];
+
+                                    return (
+                                      <div key={label} className="llm-judge-opinion">
+                                        <div className="llm-judge-header">
+                                          <img
+                                            className="llm-judge-avatar"
+                                            src={avatar}
+                                            alt={`${label} avatar`}
+                                          />
+                                          <div className="llm-judge-meta">
+                                            <p className="llm-judge-name">{label}</p>
+                                            <span className="llm-opinion-score">
+                                              Rating: {opinion?.rating ?? "—"}
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <p>
+                                          {opinion?.note ??
+                                            "No specific note provided for this item."}
+                                        </p>
                                       </div>
-                                    </div>
-                                    <p>
-                                      {opinion?.note ?? "No specific note provided for this item."}
-                                    </p>
-                                  </div>
-                                );
-                              })}
-                          </div>
-                        </li>
-                      ))}
+                                    );
+                                  })}
+                              </div>
+                            ) : null}
+                          </li>
+                        );
+                      })}
                     </ol>
                   </div>
                 ))

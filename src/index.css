@@ -697,6 +697,33 @@ body {
   list-style: decimal;
   display: grid;
   gap: 10px;
+  border: 1px solid rgba(47, 43, 37, 0.18);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.llm-rule-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+}
+
+.llm-rule-title {
+  font-weight: 600;
+}
+
+.llm-rule-chevron {
+  font-weight: 700;
+  color: var(--muted);
 }
 
 .llm-area-rule-header {
