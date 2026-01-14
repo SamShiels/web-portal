@@ -144,13 +144,9 @@ const UploadPage = () => {
           <label className="upload-label" htmlFor="paper-file">
             PDF file
           </label>
-          <input
-            className="upload-file-name"
-            type="text"
-            value={file ? file.name : "No file selected"}
-            readOnly
-            aria-live="polite"
-          />
+          <p className="upload-file-name" aria-live="polite">
+            {file ? file.name : "No file selected"}
+          </p>
           <div
             className={`dropzone ${dragActive ? "is-active" : ""}`}
             onDragOver={(event) => {

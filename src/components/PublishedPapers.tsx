@@ -1,10 +1,19 @@
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "react-oidc-context";
 import { Link } from "react-router-dom";
 import CommentThread, { type Comment } from "./CommentThread";
-import { PAPERS, type Paper } from "../data/papers";
+import { listPapers, type Paper } from "../api/client";
+
+type UiPaper = {
+  id: string;
+  title: string;
+  authors: string;
+  detailUrl: string;
+  dif: number;
+};
 
 type PapersListProps = {
-  papers: Paper[];
+  papers: UiPaper[];
 };
 
 const PapersList = ({ papers }: PapersListProps) => {
@@ -76,9 +85,9 @@ const PapersList = ({ papers }: PapersListProps) => {
                   {paper.title}
                 </Link>
                 <p className="paper-authors">{paper.authors}</p>
-                <a className="paper-pdf" href={paper.pdfUrl} download>
-                  PDF
-                </a>
+                  <Link className="paper-pdf" to={paper.detailUrl}>
+                    View
+                  </Link>
 
                 <CommentThread
                   isOpen={isOpen}
@@ -88,9 +97,9 @@ const PapersList = ({ papers }: PapersListProps) => {
                 />
               </div>
               <div className="paper-meta">
-                <a className="paper-dif" href={paper.pdfUrl} target="_blank" rel="noreferrer">
-                  DIF: {paper.dif}
-                </a>
+                  <Link className="paper-dif" to={paper.detailUrl}>
+                    DIF: {paper.dif}
+                  </Link>
                 <div className="paper-actions">
                   <a className="paper-action" href="#">
                     Like
@@ -120,13 +129,74 @@ const PapersList = ({ papers }: PapersListProps) => {
 };
 
 const PublishedPapers = () => {
+  const auth = useAuth();
+  const [papers, setPapers] = useState<UiPaper[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchPapers = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const accessToken = auth.user?.id_token;
+        if (!accessToken) {
+          throw new Error("Missing access token.");
+        }
+
+        const response = await listPapers(accessToken);
+        if (isMounted) {
+          const mapped = (response.papers ?? [])
+            .filter((paper) => Boolean(paper.paperId))
+            .map((paper: Paper) => {
+              const title = paper.name ?? "Untitled paper";
+              const authors = paper.authors?.join(", ") ?? "Unknown authors";
+              const dif = Math.round((paper.overallRating ?? 0) * 20);
+
+              return {
+                id: paper.paperId,
+                title,
+                authors,
+                detailUrl: `/papers/${paper.paperId}`,
+                dif
+              };
+            });
+          setPapers(mapped);
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Unable to load papers.";
+        if (isMounted) {
+          setError(message);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchPapers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [auth.user?.id_token]);
+
   return (
     <section className="papers">
       <div className="papers-header">
         <h2>Published Papers</h2>
         <p>Peer-reviewed insights and collaborative drafts from the exchange.</p>
       </div>
-      <PapersList papers={PAPERS} />
+      {isLoading ? <p className="papers-status">Loading papers...</p> : null}
+      {error ? <p className="papers-status papers-error">{error}</p> : null}
+      {!isLoading && !error && papers.length === 0 ? (
+        <p className="papers-status">No papers yet.</p>
+      ) : null}
+      {!isLoading && !error && papers.length > 0 ? <PapersList papers={papers} /> : null}
     </section>
   );
 };

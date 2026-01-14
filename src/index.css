@@ -281,6 +281,7 @@ body {
 
 .upload-file-name {
   color: var(--muted);
+  margin: 0;
 }
 
 .upload-form input:focus,
@@ -395,6 +396,15 @@ body {
 .papers-header p {
   margin: 0;
   color: var(--muted);
+}
+
+.papers-status {
+  margin: 0;
+  color: var(--muted);
+}
+
+.papers-error {
+  color: #9b1c1c;
 }
 
 .papers-list {
