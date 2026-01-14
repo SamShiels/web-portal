@@ -885,13 +885,22 @@ body {
 
 .metrics-bar-row {
   display: grid;
-  grid-template-columns: 1fr auto 52px;
-  gap: 10px;
+  gap: 8px;
+}
+
+.metrics-bar-meta {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .metrics-bar-label {
   font-weight: 600;
+}
+
+.metrics-bar-value {
+  font-size: 0.9rem;
 }
 
 .metrics-bar-rail {

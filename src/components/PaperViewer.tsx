@@ -347,26 +347,28 @@ const PaperViewer = () => {
             <p className="paper-viewer-placeholder">Graphs will appear once ratings arrive.</p>
           ) : (
             <div className="metrics-grid">
-              <div className="metric-block">
-                <div className="metric-block-header">
-                  <h3>Category highs</h3>
-                  <span className="metric-note">Scaled to 5</span>
-                </div>
-                <div className="metrics-bars">
-                  {sortedCategoryAverages.slice(0, 6).map(({ area, average }) => (
-                    <div key={area} className="metrics-bar-row">
-                      <span className="metrics-bar-label">{area}</span>
-                      <div className="metrics-bar-rail" aria-hidden>
-                        <div
-                          className="metrics-bar-fill"
-                          style={{ width: `${Math.min(average / 5, 1) * 100}%` }}
-                        />
+                <div className="metric-block">
+                  <div className="metric-block-header">
+                    <h3>Category highs</h3>
+                    <span className="metric-note">Scaled to 5</span>
+                  </div>
+                  <div className="metrics-bars">
+                    {sortedCategoryAverages.slice(0, 6).map(({ area, average }) => (
+                      <div key={area} className="metrics-bar-row">
+                        <div className="metrics-bar-meta">
+                          <span className="metrics-bar-label">{area}</span>
+                          <span className="metrics-bar-value">{average.toFixed(1)} / 5</span>
+                        </div>
+                        <div className="metrics-bar-rail" aria-hidden>
+                          <div
+                            className="metrics-bar-fill"
+                            style={{ width: `${Math.min(average / 5, 1) * 100}%` }}
+                          />
+                        </div>
                       </div>
-                      <span className="metrics-bar-value">{average.toFixed(1)}</span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
 
               <div className="metric-block">
                 <div className="metric-block-header">
