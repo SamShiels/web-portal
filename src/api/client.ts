@@ -64,9 +64,13 @@ export type ChatMessage = {
 
 export type ChatRequest = {
   query: string;
+  reviewUri?: string | LlmMetricsResponse;
+  history: Array<{ role: ChatMessage["role"]; content: Array<{ text: string }> }>;
 };
 
-export type ChatResponse = string | { response?: string; output?: string; message?: string };
+export type ChatResponse =
+  | string
+  | { answer?: string; last_message?: string; response?: string; output?: string; message?: string };
 
 const getApiBaseUrl = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;

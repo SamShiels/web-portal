@@ -621,6 +621,7 @@ const PaperViewer = () => {
             isChatting={isChatting}
             setIsChatting={setIsChatting}
             accessToken={auth.user?.id_token}
+            reviewUri={paper?.reviewText}
           />
         </div>
       </section>

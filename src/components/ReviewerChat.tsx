@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { sendChat } from "../api/client";
+import { LlmMetricsResponse, sendChat } from "../api/client";
 
 export type ChatThreadMessage = {
   id: string;
@@ -18,6 +18,7 @@ type ReviewerChatProps = {
   isChatting: boolean;
   setIsChatting: React.Dispatch<React.SetStateAction<boolean>>;
   accessToken?: string;
+  reviewUri?: string | LlmMetricsResponse;
 };
 
 const createChatId = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -31,7 +32,8 @@ const ReviewerChat = ({
   setError,
   isChatting,
   setIsChatting,
-  accessToken
+  accessToken,
+  reviewUri
 }: ReviewerChatProps) => {
   const chatThreadRef = useRef<HTMLDivElement>(null);
 
@@ -61,9 +63,16 @@ const ReviewerChat = ({
     setIsChatting(true);
 
     try {
+      const historyPayload = messages.map((msg) => ({
+        role: msg.role,
+        content: [{ text: msg.content }]
+      }));
+
       const response = await sendChat(
         {
-          query: trimmed
+          query: trimmed,
+          reviewUri,
+          history: historyPayload
         },
         accessToken
       );
@@ -71,7 +80,12 @@ const ReviewerChat = ({
       const reply =
         typeof response === "string"
           ? response
-          : response.response ?? response.output ?? response.message ?? "";
+          : response.answer ??
+            response.last_message ??
+            response.response ??
+            response.output ??
+            response.message ??
+            "";
 
       if (!reply) {
         throw new Error("Empty response from chat service.");
