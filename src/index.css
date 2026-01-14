@@ -39,10 +39,9 @@ body {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 32px;
   align-items: center;
-  position: relative;
 }
 
 .hero-text h1 {
@@ -72,6 +71,7 @@ body {
   padding: 16px 20px;
   border-radius: 20px;
   box-shadow: 8px 10px 0 var(--shadow);
+  grid-column: 3;
 }
 
 .logo-wrap img {
@@ -81,9 +81,8 @@ body {
 }
 
 .logout-button {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: relative;
+  margin-top: 5px;
   border: 2px solid var(--border);
   background: #fff;
   color: var(--ink);
@@ -91,6 +90,9 @@ body {
   border-radius: 999px;
   font-weight: 600;
   cursor: pointer;
+  grid-column: 2;
+  justify-self: end;
+  align-self: start;
 }
 
 .logout-button:hover {
@@ -282,6 +284,58 @@ body {
 .papers-list {
   display: grid;
   gap: 16px;
+}
+
+.papers-list-section {
+  display: grid;
+  gap: 16px;
+}
+
+.papers-scroll {
+  max-height: 560px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.papers-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.papers-scroll::-webkit-scrollbar-thumb {
+  background: rgba(47, 43, 37, 0.3);
+  border-radius: 999px;
+}
+
+.papers-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 2px solid rgba(47, 43, 37, 0.2);
+  border-radius: 16px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.papers-page-button {
+  border: 2px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.papers-page-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.papers-page-status {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .paper-card {
@@ -521,6 +575,12 @@ body {
 
   .logo-wrap {
     justify-self: start;
+    grid-column: auto;
+  }
+
+  .logout-button {
+    grid-column: auto;
+    justify-self: start;
   }
 
   .dropzone-inner {
@@ -544,6 +604,15 @@ body {
 
   .paper-meta {
     justify-items: start;
+  }
+
+  .papers-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .papers-page-status {
+    text-align: center;
   }
 }
 

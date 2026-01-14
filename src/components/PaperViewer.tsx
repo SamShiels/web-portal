@@ -32,7 +32,7 @@ const PaperViewer = () => {
             <p className="paper-viewer-authors">{paper.authors}</p>
           </div>
           <div className="paper-viewer-meta">
-            <span className="paper-viewer-dif">DIF {paper.dif}</span>
+            <span className="paper-viewer-dif">Debiased Impact Factor: {paper.dif}</span>
             <span className="paper-viewer-date">{paper.publishedAt}</span>
           </div>
         </div>

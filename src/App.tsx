@@ -94,9 +94,6 @@ const App = () => {
                     will shape the next steps together.
                   </p>
                 </div>
-                <div className="logo-wrap">
-                  <img src="/rad_logo.svg" alt="Dementia X Change logo" />
-                </div>
                 <button
                   className="logout-button"
                   type="button"
@@ -104,6 +101,9 @@ const App = () => {
                 >
                   Sign out
                 </button>
+                <div className="logo-wrap">
+                  <img src="/rad_logo.svg" alt="Dementia X Change logo" />
+                </div>
               </header>
 
               <section className="upload">
