@@ -675,67 +675,93 @@ body {
   color: var(--ink);
 }
 
-.llm-judges {
+.llm-areas {
   display: grid;
   gap: 20px;
 }
 
-.llm-judge h3 {
+.llm-area h3 {
   margin: 0 0 8px;
   font-size: 1.1rem;
   color: var(--ink);
+}
+
+.llm-area-rules {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.llm-area-rule {
+  list-style: decimal;
+  display: grid;
+  gap: 10px;
+}
+
+.llm-area-rule-header {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.llm-judge-opinions {
+  display: grid;
+  gap: 12px;
+}
+
+.llm-judge-opinion {
+  border-radius: 14px;
+  border: 1px solid rgba(47, 43, 37, 0.18);
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.llm-judge-opinion p {
+  margin: 6px 0 0;
+  color: var(--muted);
 }
 
 .llm-judge-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 8px;
 }
 
 .llm-judge-avatar {
   width: 48px;
   height: auto;
   aspect-ratio: 300 / 370;
+  border-radius: 50%;
+  border: 2px solid rgba(47, 43, 37, 0.2);
+  object-fit: cover;
 }
 
-.llm-judge-header h3 {
-  margin: 0;
-}
-
-.llm-opinions {
-  margin: 0;
-  padding-left: 18px;
+.llm-judge-meta {
   display: grid;
-  gap: 12px;
-  color: var(--muted);
+  gap: 4px;
 }
 
-.llm-opinion {
-  list-style: decimal;
-}
-
-.llm-opinion p {
-  margin: 4px 0 0;
-  color: var(--muted);
-}
-
-.llm-opinion-header {
-  display: flex;
-  gap: 10px;
+.llm-judge-name {
+  margin: 0;
   font-weight: 600;
   color: var(--ink);
-  font-size: 0.9rem;
 }
 
 .llm-opinion-score {
   background: rgba(201, 106, 72, 0.12);
   padding: 2px 8px;
   border-radius: 999px;
+  width: fit-content;
 }
 
 .llm-opinion-id {
   color: var(--muted);
+}
+
+.llm-opinion-rule {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .paper-back {
