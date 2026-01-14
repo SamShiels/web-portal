@@ -730,10 +730,6 @@ body {
 .llm-judge-avatar {
   width: 48px;
   height: auto;
-  aspect-ratio: 300 / 370;
-  border-radius: 50%;
-  border: 2px solid rgba(47, 43, 37, 0.2);
-  object-fit: cover;
 }
 
 .llm-judge-meta {

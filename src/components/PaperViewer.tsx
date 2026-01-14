@@ -75,6 +75,7 @@ const RULESETS: Record<string, Array<{ id: number; area: string; rule: string }>
 };
 
 const JUDGE_AVATARS = ["/bot1.png", "/bot2.png", "/bot3.png"];
+const JUDGE_LABELS = ["Chirpy bot", "Brainy Brian", "Chatty Mcchatface"];
 
 const PaperViewer = () => {
   const auth = useAuth();
@@ -231,30 +232,33 @@ const PaperViewer = () => {
 
                           {/* Each judge's opinion for THIS rule */}
                           <div className="llm-judge-opinions">
-                            {llmMetrics && Object.entries(llmMetrics).map(([judgeName, opinions], idx) => {
-                              const opinion = opinions[String(rule.id)];
-                              // Clean up name for display: "arrive_claude" -> "Claude"
-                              const displayName = judgeName.split(/_| /).filter(s => s !== 'arrive' && s !== 'consort' && s !== 'strobe')[0] || judgeName;
+                            {llmMetrics &&
+                              Object.entries(llmMetrics).map(([, opinions], idx) => {
+                                const opinion = opinions[String(rule.id)];
+                                const label = JUDGE_LABELS[idx] ?? `Judge ${idx + 1}`;
+                                const avatar = JUDGE_AVATARS[idx % JUDGE_AVATARS.length];
 
-                              return (
-                                <div key={judgeName} className="llm-judge-opinion">
-                                  <div className="llm-judge-header">
-                                    <img 
-                                      className="llm-judge-avatar" 
-                                      src={JUDGE_AVATARS[idx % JUDGE_AVATARS.length]} 
-                                      alt="bot" 
-                                    />
-                                    <div className="llm-judge-meta">
-                                      <p className="llm-judge-name">{displayName}</p>
-                                      <span className="llm-opinion-score">
-                                        Rating: {opinion?.rating ?? "—"}
-                                      </span>
+                                return (
+                                  <div key={label} className="llm-judge-opinion">
+                                    <div className="llm-judge-header">
+                                      <img
+                                        className="llm-judge-avatar"
+                                        src={avatar}
+                                        alt={`${label} avatar`}
+                                      />
+                                      <div className="llm-judge-meta">
+                                        <p className="llm-judge-name">{label}</p>
+                                        <span className="llm-opinion-score">
+                                          Rating: {opinion?.rating ?? "—"}
+                                        </span>
+                                      </div>
                                     </div>
+                                    <p>
+                                      {opinion?.note ?? "No specific note provided for this item."}
+                                    </p>
                                   </div>
-                                  <p>{opinion?.note ?? "No specific note provided for this item."}</p>
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
                           </div>
                         </li>
                       ))}
