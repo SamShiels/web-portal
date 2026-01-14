@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 import { LlmMetricsResponse, sendChat } from "../api/client";
 
 export type ChatThreadMessage = {
@@ -72,7 +75,7 @@ const ReviewerChat = ({
       const response = await sendChat(
         {
           query: trimmed,
-          reviewText,
+          reviewText: reviewText,
           history: historyPayload
         },
         accessToken
@@ -137,16 +140,11 @@ const ReviewerChat = ({
         >
           <div>
             <p className="eyebrow">Ask the desk</p>
-            <h2>Reviewer Chat</h2>
+            <h2>Chat</h2>
           </div>
           <span className="chat-status">{isChatting ? "Drafting response..." : "Live"}</span>
         </button>
         <div className="chat-thread" ref={chatThreadRef}>
-          {messages.length === 0 ? (
-            <p className="chat-empty">
-              Ask for a recap, compliance help, or improvements to the draft.
-            </p>
-          ) : null}
           {messages.map((message) => (
             <div
               key={message.id}
@@ -154,7 +152,22 @@ const ReviewerChat = ({
                 message.role === "user" ? "chat-bubble-user" : "chat-bubble-assistant"
               }`}
             >
-              <p>{message.content}</p>
+              <div className="chat-message">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkBreaks]}
+                  components={{
+                    p: (props) => <p className="chat-line" {...props} />,
+                    h1: (props) => <h3 className="chat-heading" {...props} />,
+                    h2: (props) => <h4 className="chat-heading" {...props} />,
+                    h3: (props) => <h5 className="chat-heading" {...props} />,
+                    ul: (props) => <ul className="chat-list" {...props} />,
+                    ol: (props) => <ol className="chat-list" {...props} />,
+                    li: (props) => <li className="chat-list-item" {...props} />
+                  }}
+                >
+                  {message.content}
+                </ReactMarkdown>
+              </div>
               <span className="chat-bubble-meta">
                 {message.role === "user" ? "You" : "Reviewer"} ·{" "}
                 {new Date(message.sentAt).toLocaleTimeString([], {
@@ -171,9 +184,6 @@ const ReviewerChat = ({
           ) : null}
         </div>
         <form className="chat-form" onSubmit={handleSubmit}>
-          <label className="chat-label" htmlFor="paper-chat-input">
-            Send a note to the reviewers
-          </label>
           <textarea
             id="paper-chat-input"
             className="chat-input"

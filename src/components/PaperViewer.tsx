@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useAuth } from "react-oidc-context";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -245,6 +245,69 @@ const PaperViewer = () => {
     return Math.round(normalized * 10) / 10;
   }, [llmSummary?.synthesis_summary?.impact]);
 
+  const pulseMetrics = useMemo(() => {
+    const categoryValues = categoryAverages.map((item) => item.average);
+    const judgeValues = judgeAverages
+      .map((item) => item.average)
+      .filter((value): value is number => value !== null);
+
+    const mean =
+      categoryValues.length > 0
+        ? categoryValues.reduce((sum, value) => sum + value, 0) / categoryValues.length
+        : null;
+
+    const variance =
+      mean !== null && categoryValues.length > 1
+        ? categoryValues.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) /
+          (categoryValues.length - 1)
+        : null;
+
+    const cohesion =
+      variance !== null
+        ? Math.round(Math.max(0, Math.min(1, 1 - Math.sqrt(variance) / 5)) * 100)
+        : null;
+
+    const spread =
+      categoryValues.length > 0
+        ? Math.round(
+            Math.max(
+              0,
+              Math.min(1, (Math.max(...categoryValues) - Math.min(...categoryValues)) / 5)
+            ) * 100
+          )
+        : null;
+
+    const judgeMean =
+      judgeValues.length > 0
+        ? judgeValues.reduce((sum, value) => sum + value, 0) / judgeValues.length
+        : null;
+
+    const judgeStd =
+      judgeMean !== null && judgeValues.length > 1
+        ? Math.sqrt(
+            judgeValues.reduce((sum, value) => sum + Math.pow(value - judgeMean, 2), 0) /
+              judgeValues.length
+          )
+        : null;
+
+    const judgeSync =
+      judgeStd !== null
+        ? Math.round(Math.max(0, Math.min(1, 1 - judgeStd / 3)) * 100)
+        : null;
+
+    const signal =
+      overallCategoryAverage !== null
+        ? Math.round(Math.max(0, Math.min(1, overallCategoryAverage / 5)) * 100)
+        : null;
+
+    return [
+      { label: "Cohesion", value: cohesion, caption: "How tightly categories agree" },
+      { label: "Spread", value: spread, caption: "Top vs bottom distance" },
+      { label: "Judge sync", value: judgeSync, caption: "Panel alignment pulse" },
+      { label: "Signal", value: signal, caption: "Overall lift vs ceiling" }
+    ];
+  }, [categoryAverages, judgeAverages, overallCategoryAverage]);
+
   if (isLoading) {
     return (
       <div className="page">
@@ -356,6 +419,34 @@ const PaperViewer = () => {
             <p className="paper-viewer-placeholder">Graphs will appear once ratings arrive.</p>
           ) : (
             <div className="metrics-grid">
+                <div className="metric-block metric-pulse">
+                  <div className="metric-block-header">
+                    <h3>Signal lab</h3>
+                    <span className="metric-note">Micro-metrics in motion</span>
+                  </div>
+                  <div className="metric-pulse-grid">
+                    {pulseMetrics.map((metric) => (
+                      <div key={metric.label} className="metric-pulse-card">
+                        <div
+                          className="pulse-orb"
+                          style={
+                            {
+                              ["--pulse-fill" as string]: `${metric.value ?? 0}%`
+                            } as CSSProperties
+                          }
+                          aria-hidden
+                        >
+                          <span>{metric.value !== null ? `${metric.value}%` : "—"}</span>
+                        </div>
+                        <div className="pulse-meta">
+                          <p className="pulse-label">{metric.label}</p>
+                          <p className="pulse-caption">{metric.caption}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="metric-block">
                   <div className="metric-block-header">
                     <h3>Category highs</h3>
@@ -621,7 +712,7 @@ const PaperViewer = () => {
             isChatting={isChatting}
             setIsChatting={setIsChatting}
             accessToken={auth.user?.id_token}
-            reviewText={paper?.reviewText}
+            reviewText={paper.reviewText}
           />
         </div>
       </section>
