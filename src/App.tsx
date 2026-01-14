@@ -1,9 +1,12 @@
 import { useRef, useState } from "react";
+import { useAuth } from "react-oidc-context";
+import Login from "./components/Login";
 import PublishedPapers from "./components/PublishedPapers";
 
 const ALLOWED_TYPE = "application/pdf";
 
 const App = () => {
+  const auth = useAuth();
   const [dragActive, setDragActive] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -34,6 +37,30 @@ const App = () => {
     inputRef.current?.click();
   };
 
+  if (auth.isLoading || auth.activeNavigator) {
+    return (
+      <div className="login">
+        <div className="login-card">
+          <p className="login-subhead">Finishing sign-in...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (auth.error) {
+    return (
+      <div className="login">
+        <div className="login-card">
+          <p className="login-error">{auth.error.message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!auth.isAuthenticated) {
+    return <Login onLogin={() => auth.signinRedirect()} />;
+  }
+
   return (
     <div className="page">
       <header className="hero">
@@ -48,6 +75,13 @@ const App = () => {
         <div className="logo-wrap">
           <img src="/logo.svg" alt="Dementia X Change logo" />
         </div>
+        <button
+          className="logout-button"
+          type="button"
+          onClick={() => auth.signoutRedirect()}
+        >
+          Sign out
+        </button>
       </header>
 
       <section className="upload">
