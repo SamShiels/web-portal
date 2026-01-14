@@ -1,44 +1,13 @@
-import { useRef, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 import About from "./components/About";
 import Login from "./components/Login";
 import PaperViewer from "./components/PaperViewer";
 import PublishedPapers from "./components/PublishedPapers";
-
-const ALLOWED_TYPE = "application/pdf";
+import UploadPage from "./components/UploadPage";
 
 const App = () => {
   const auth = useAuth();
-  const [dragActive, setDragActive] = useState(false);
-  const [status, setStatus] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleFiles = (files: FileList | null) => {
-    if (!files || files.length === 0) {
-      return;
-    }
-
-    const file = files[0];
-    const isPdf = file.type === ALLOWED_TYPE || file.name.toLowerCase().endsWith(".pdf");
-
-    if (!isPdf) {
-      setStatus("Only PDF manuscripts are accepted right now.");
-      return;
-    }
-
-    setStatus(`Selected: ${file.name}`);
-  };
-
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragActive(false);
-    handleFiles(event.dataTransfer.files);
-  };
-
-  const handleBrowse = () => {
-    inputRef.current?.click();
-  };
 
   const renderAuthState = () => {
     if (auth.isLoading || auth.activeNavigator) {
@@ -98,6 +67,9 @@ const App = () => {
                     <Link className="home-link" to="/about">
                       Read the mission
                     </Link>
+                    <Link className="home-link" to="/upload">
+                      Upload a manuscript
+                    </Link>
                   </div>
                 </div>
                 <div className="logo-container">
@@ -114,50 +86,6 @@ const App = () => {
                 </div>
               </header>
 
-              <section className="upload">
-                <div className="upload-header">
-                  <h2>Upload your manuscript</h2>
-                  <p>PDF only for now. We will validate the rest once the pipeline is live.</p>
-                </div>
-                <div
-                  className={`dropzone ${dragActive ? "is-active" : ""}`}
-                  onDragOver={(event) => {
-                    event.preventDefault();
-                    setDragActive(true);
-                  }}
-                  onDragLeave={() => setDragActive(false)}
-                  onDrop={handleDrop}
-                  onClick={handleBrowse}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      handleBrowse();
-                    }
-                  }}
-                  aria-label="Upload your manuscript as a PDF"
-                >
-                  <input
-                    ref={inputRef}
-                    type="file"
-                    accept=".pdf,application/pdf"
-                    onChange={(event) => handleFiles(event.target.files)}
-                    hidden
-                  />
-                  <div className="dropzone-inner">
-                    <div className="dropzone-icon">PDF</div>
-                    <div>
-                      <p className="dropzone-title">Drag and drop your file here</p>
-                      <p className="dropzone-caption">or click to browse your device</p>
-                    </div>
-                    <button type="button" className="dropzone-button" onClick={handleBrowse}>
-                      Browse files
-                    </button>
-                  </div>
-                </div>
-                <p className="upload-status">{status ?? "No file selected yet."}</p>
-              </section>
               <PublishedPapers />
             </div>
           ) : (
@@ -168,6 +96,10 @@ const App = () => {
       <Route
         path="/about"
         element={auth.isAuthenticated ? <About /> : <Navigate to="/login" replace />}
+      />
+      <Route
+        path="/upload"
+        element={auth.isAuthenticated ? <UploadPage /> : <Navigate to="/login" replace />}
       />
       <Route
         path="/papers/:paperId"

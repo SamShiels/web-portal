@@ -82,6 +82,7 @@ body {
   gap: 8px;
   border: 2px solid var(--border);
   padding: 8px 16px;
+  margin-right: 5px;
   border-radius: 999px;
   text-decoration: none;
   color: var(--ink);
