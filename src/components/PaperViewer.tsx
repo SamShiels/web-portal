@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { Link, useParams } from "react-router-dom";
 import { getDownloadUrl, getPaper, type Paper } from "../api/client";
+import Skeleton from "./Skeleton";
 
 const PaperViewer = () => {
   const auth = useAuth();
@@ -60,7 +61,27 @@ const PaperViewer = () => {
       <div className="page">
         <section className="paper-viewer">
           <p className="eyebrow">Paper viewer</p>
-          <p className="subhead">Loading paper...</p>
+          <div className="paper-viewer-header">
+            <div>
+              <Skeleton className="skeleton-line skeleton-title" />
+              <Skeleton className="skeleton-line skeleton-text" />
+            </div>
+            <div className="paper-viewer-meta">
+              <Skeleton className="skeleton-pill" />
+              <Skeleton className="skeleton-line skeleton-text" />
+            </div>
+          </div>
+          <div className="paper-viewer-body">
+            <div className="paper-viewer-card">
+              <Skeleton className="skeleton-line skeleton-title" />
+              <Skeleton className="skeleton-line skeleton-text" />
+              <Skeleton className="skeleton-line skeleton-text" />
+            </div>
+            <div className="paper-viewer-card">
+              <Skeleton className="skeleton-line skeleton-title" />
+              <Skeleton className="skeleton-pill" />
+            </div>
+          </div>
         </section>
       </div>
     );

@@ -398,6 +398,61 @@ body {
   color: var(--muted);
 }
 
+.skeleton {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(145, 133, 118, 0.18),
+    rgba(145, 133, 118, 0.45),
+    rgba(145, 133, 118, 0.18)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite, pulse 1.6s ease-in-out infinite;
+}
+
+.skeleton-line {
+  height: 14px;
+}
+
+.skeleton-title {
+  height: 20px;
+  width: min(280px, 80%);
+}
+
+.skeleton-text {
+  width: min(220px, 70%);
+}
+
+.skeleton-pill {
+  height: 32px;
+  width: 120px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.papers-skeleton {
+  display: grid;
+  gap: 16px;
+}
+
 .papers-status {
   margin: 0;
   color: var(--muted);

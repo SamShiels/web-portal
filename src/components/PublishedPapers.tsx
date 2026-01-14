@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { Link } from "react-router-dom";
 import CommentThread, { type Comment } from "./CommentThread";
+import Skeleton from "./Skeleton";
 import { getDownloadUrl, listPapers, type Paper } from "../api/client";
 
 type UiPaper = {
@@ -151,6 +152,7 @@ const PublishedPapers = () => {
   const [papers, setPapers] = useState<UiPaper[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const skeletonCards = Array.from({ length: 3 }, (_, index) => index);
 
   useEffect(() => {
     let isMounted = true;
@@ -209,13 +211,29 @@ const PublishedPapers = () => {
         <h2>Published Papers</h2>
         <p>Peer-reviewed insights and collaborative drafts from the exchange.</p>
       </div>
-      {isLoading ? <p className="papers-status">Loading papers...</p> : null}
+      {isLoading ? (
+        <div className="papers-skeleton">
+          {skeletonCards.map((index) => (
+            <div key={index} className="paper-card">
+              <div className="paper-main">
+                <Skeleton className="skeleton-line skeleton-title" />
+                <Skeleton className="skeleton-line skeleton-text" />
+                <Skeleton className="skeleton-pill" />
+              </div>
+              <div className="paper-meta">
+                <Skeleton className="skeleton-pill" />
+                <Skeleton className="skeleton-line skeleton-text" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
       {error ? <p className="papers-status papers-error">{error}</p> : null}
       {!isLoading && !error && papers.length === 0 ? (
         <p className="papers-status">No papers yet.</p>
       ) : null}
       {!isLoading && !error && papers.length > 0 ? (
-        <PapersList papers={papers} accessToken={auth.user?.access_token ?? ""} />
+        <PapersList papers={papers} accessToken={auth.user?.id_token ?? ""} />
       ) : null}
     </section>
   );
