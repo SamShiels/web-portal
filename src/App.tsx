@@ -58,7 +58,7 @@ const App = () => {
               <header className="hero">
                 <div className="hero-text">
                   <p className="eyebrow">Hackathon Portal</p>
-                  <h1>Dementia X Change</h1>
+                  <h1>DementiaXchange</h1>
                   <p className="home-topline">
                     We believe that dementia research should be available to all, immediately,
                     without barriers, for free.

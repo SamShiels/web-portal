@@ -413,20 +413,24 @@ body {
 
 .skeleton-line {
   height: 14px;
+  margin-top: 2px;
 }
 
 .skeleton-title {
   height: 20px;
   width: min(280px, 80%);
+  margin-top: 2px;
 }
 
 .skeleton-text {
   width: min(220px, 70%);
+  margin-top: 2px;
 }
 
 .skeleton-pill {
   height: 32px;
   width: 120px;
+  margin-top: 2px;
 }
 
 @keyframes shimmer {
