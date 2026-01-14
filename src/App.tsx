@@ -99,10 +99,6 @@ const App = () => {
                       Read the mission
                     </Link>
                   </div>
-                  <p className="subhead">
-                    Trade rough ideas for real-world momentum. Drop in a manuscript draft and we
-                    will shape the next steps together.
-                  </p>
                 </div>
                 <div className="logo-container">
                   <button
