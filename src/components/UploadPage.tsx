@@ -40,6 +40,27 @@ const UploadPage = () => {
           <h2>Upload your manuscript</h2>
           <p>PDF only for now. We will validate the rest once the pipeline is live.</p>
         </div>
+        <div className="upload-form">
+          <label className="upload-label" htmlFor="paper-title">
+            Title
+          </label>
+          <input id="paper-title" type="text" placeholder="Paper title" required />
+          <label className="upload-label" htmlFor="paper-authors">
+            Authors
+          </label>
+          <input id="paper-authors" type="text" placeholder="Author names" required />
+          <label className="upload-label" htmlFor="paper-type">
+            Paper type
+          </label>
+          <select id="paper-type" className="paper-select" defaultValue="" required>
+            <option value="" disabled>
+              Select a type
+            </option>
+            <option value="original-research">Original research</option>
+            <option value="clinical-brief">Clinical brief</option>
+            <option value="methods-note">Methods note</option>
+          </select>
+        </div>
         <div
           className={`dropzone ${dragActive ? "is-active" : ""}`}
           onDragOver={(event) => {

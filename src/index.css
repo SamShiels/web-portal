@@ -258,6 +258,37 @@ body {
   color: var(--muted);
 }
 
+.upload-form {
+  display: grid;
+  gap: 10px;
+}
+
+.upload-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.upload-form input,
+.upload-form select {
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  font: inherit;
+  background: #fff;
+}
+
+.upload-form input:focus,
+.upload-form select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.paper-select {
+  height: 44px;
+}
+
 .dropzone {
   background: var(--paper);
   border: 2px solid var(--border);
