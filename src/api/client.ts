@@ -16,7 +16,7 @@ export type Paper = {
   published?: boolean;
   ratings?: Record<string, number>;
   overallRating?: number;
-  reviewText?: string;
+  reviewText?: string | LlmMetricsResponse;
 };
 
 export type CreatePaperResponse = {
@@ -33,6 +33,27 @@ export type ListPapersResponse = {
 
 export type DownloadUrlResponse = {
   downloadUrl: string;
+};
+
+export type LlmMetricItem = {
+  rating: number;
+  note: string;
+};
+
+export type LlmMetricsGroup = Record<string, LlmMetricItem>;
+
+export type LlmMetricsResponse = {
+  llm_metrics: Record<string, LlmMetricsGroup>;
+  judge?: {
+    synthesis_summary?: {
+      overview?: string;
+      common_themes?: string;
+      areas_of_agreement?: string;
+      areas_of_disagreement?: string;
+      feedback?: string;
+      impact?: string;
+    };
+  };
 };
 
 const getApiBaseUrl = () => {

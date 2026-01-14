@@ -213,6 +213,7 @@ const PublishedPapers = () => {
       </div>
       {isLoading ? (
         <div className="papers-skeleton">
+          <Skeleton className="skeleton-line skeleton-title" />
           {skeletonCards.map((index) => (
             <div key={index} className="paper-card">
               <div className="paper-main">

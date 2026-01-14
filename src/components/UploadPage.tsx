@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useAuth } from "react-oidc-context";
+import { Link } from "react-router-dom";
 import { createPaper } from "../api/client";
 
 const ALLOWED_TYPE = "application/pdf";
@@ -110,6 +111,9 @@ const UploadPage = () => {
 
   return (
     <div className="page">
+      <Link className="page-back" to="/">
+        ← Back
+      </Link>
       <section className="upload">
         <div className="upload-header">
           <h2>Upload your manuscript</h2>
@@ -137,16 +141,10 @@ const UploadPage = () => {
             <option value="" disabled>
               Select a type
             </option>
-            <option value="original-research">Original research</option>
-            <option value="clinical-brief">Clinical brief</option>
-            <option value="methods-note">Methods note</option>
+            <option value="strobe">STROBE</option>
+            <option value="consort">CONSORT</option>
+            <option value="arrive">ARRIVE</option>
           </select>
-          <label className="upload-label" htmlFor="paper-file">
-            PDF file
-          </label>
-          <p className="upload-file-name" aria-live="polite">
-            {file ? file.name : "No file selected"}
-          </p>
           <div
             className={`dropzone ${dragActive ? "is-active" : ""}`}
             onDragOver={(event) => {

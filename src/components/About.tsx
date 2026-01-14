@@ -1,6 +1,11 @@
+import { Link } from "react-router-dom";
+
 const About = () => {
   return (
     <div className="page">
+      <Link className="page-back" to="/">
+        ← Back
+      </Link>
       <section className="about">
         <p className="eyebrow">About</p>
         <h1>Open research, without barriers</h1>
