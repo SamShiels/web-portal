@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
+import PaperViewer from "./components/PaperViewer";
 import PublishedPapers from "./components/PublishedPapers";
 
 const ALLOWED_TYPE = "application/pdf";
@@ -94,7 +95,7 @@ const App = () => {
                   </p>
                 </div>
                 <div className="logo-wrap">
-                  <img src="/logo.svg" alt="Dementia X Change logo" />
+                  <img src="/rad_logo.svg" alt="Dementia X Change logo" />
                 </div>
                 <button
                   className="logout-button"
@@ -155,6 +156,10 @@ const App = () => {
             <Navigate to="/login" replace />
           )
         }
+      />
+      <Route
+        path="/papers/:paperId"
+        element={auth.isAuthenticated ? <PaperViewer /> : <Navigate to="/login" replace />}
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

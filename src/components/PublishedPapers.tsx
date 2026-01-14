@@ -1,37 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import CommentThread, { type Comment } from "./CommentThread";
-
-type Paper = {
-  id: string;
-  title: string;
-  authors: string;
-  pdfUrl: string;
-  dif: number;
-};
-
-const PAPERS: Paper[] = [
-  {
-    id: "dx-2024-01",
-    title: "Care Pathways for Cognitive Change",
-    authors: "R. Anand, L. Mendez, S. Iwata",
-    pdfUrl: "/papers/care-pathways.pdf",
-    dif: 72
-  },
-  {
-    id: "dx-2024-02",
-    title: "Community Signals in Early Dementia Support",
-    authors: "J. Kline, P. Sarkar",
-    pdfUrl: "/papers/community-signals.pdf",
-    dif: 58
-  },
-  {
-    id: "dx-2024-03",
-    title: "Scaling Memory Clinics with Shared Protocols",
-    authors: "M. Cho, T. Riley, A. Gomez",
-    pdfUrl: "/papers/memory-clinics.pdf",
-    dif: 64
-  }
-];
+import { PAPERS, type Paper } from "../data/papers";
 
 type PapersListProps = {
   papers: Paper[];
@@ -65,9 +35,9 @@ const PapersList = ({ papers }: PapersListProps) => {
         return (
           <article key={paper.id} className="paper-card">
             <div className="paper-main">
-              <a className="paper-title" href={paper.pdfUrl} target="_blank" rel="noreferrer">
+              <Link className="paper-title" to={`/papers/${paper.id}`}>
                 {paper.title}
-              </a>
+              </Link>
               <p className="paper-authors">{paper.authors}</p>
               <a className="paper-pdf" href={paper.pdfUrl} download>
                 PDF
