@@ -34,7 +34,7 @@ body {
   padding: 64px 32px 88px;
   display: flex;
   flex-direction: column;
-  gap: 56px;
+  gap: 30px;
 }
 
 .hero {

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { Link } from "react-router-dom";
 import CommentThread, { type Comment } from "./CommentThread";
-import { listPapers, type Paper } from "../api/client";
+import { getDownloadUrl, listPapers, type Paper } from "../api/client";
 
 type UiPaper = {
   id: string;
@@ -14,10 +14,12 @@ type UiPaper = {
 
 type PapersListProps = {
   papers: UiPaper[];
+  accessToken: string;
 };
 
-const PapersList = ({ papers }: PapersListProps) => {
+const PapersList = ({ papers, accessToken }: PapersListProps) => {
   const [openCommentId, setOpenCommentId] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const pageSize = 6;
@@ -51,8 +53,20 @@ const PapersList = ({ papers }: PapersListProps) => {
     scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }, [clampedPage]);
 
+  const handleDownload = async (paperId: string) => {
+    setDownloadError(null);
+    try {
+      const response = await getDownloadUrl(paperId, accessToken);
+      window.location.href = response.downloadUrl;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Download failed.";
+      setDownloadError(message);
+    }
+  };
+
   return (
     <>
+      {downloadError ? <p className="papers-status papers-error">{downloadError}</p> : null}
       <div className="papers-pagination">
         <button
           className="papers-page-button"
@@ -76,7 +90,7 @@ const PapersList = ({ papers }: PapersListProps) => {
       </div>
       <div className="papers-list">
         {pagedPapers.map((paper) => {
-      const isOpen = openCommentId === paper.id;
+          const isOpen = openCommentId === paper.id;
 
           return (
             <article key={paper.id} className="paper-card">
@@ -85,9 +99,13 @@ const PapersList = ({ papers }: PapersListProps) => {
                   {paper.title}
                 </Link>
                 <p className="paper-authors">{paper.authors}</p>
-                  <Link className="paper-pdf" to={paper.detailUrl}>
-                    View
-                  </Link>
+                <button
+                  className="paper-pdf"
+                  type="button"
+                  onClick={() => handleDownload(paper.id)}
+                >
+                  PDF
+                </button>
 
                 <CommentThread
                   isOpen={isOpen}
@@ -97,9 +115,9 @@ const PapersList = ({ papers }: PapersListProps) => {
                 />
               </div>
               <div className="paper-meta">
-                  <Link className="paper-dif" to={paper.detailUrl}>
-                    DIF: {paper.dif}
-                  </Link>
+                <Link className="paper-dif" to={paper.detailUrl}>
+                  DIF: {paper.dif}
+                </Link>
                 <div className="paper-actions">
                   <a className="paper-action" href="#">
                     Like
@@ -156,14 +174,14 @@ const PublishedPapers = () => {
               const authors = paper.authors?.join(", ") ?? "Unknown authors";
               const dif = Math.round((paper.overallRating ?? 0) * 20);
 
-              return {
-                id: paper.paperId,
-                title,
-                authors,
-                detailUrl: `/papers/${paper.paperId}`,
-                dif
-              };
-            });
+            return {
+              id: paper.paperId,
+              title,
+              authors,
+              detailUrl: `/papers/${paper.paperId}`,
+              dif
+            };
+          });
           setPapers(mapped);
         }
       } catch (err) {
@@ -196,7 +214,9 @@ const PublishedPapers = () => {
       {!isLoading && !error && papers.length === 0 ? (
         <p className="papers-status">No papers yet.</p>
       ) : null}
-      {!isLoading && !error && papers.length > 0 ? <PapersList papers={papers} /> : null}
+      {!isLoading && !error && papers.length > 0 ? (
+        <PapersList papers={papers} accessToken={auth.user?.access_token ?? ""} />
+      ) : null}
     </section>
   );
 };
