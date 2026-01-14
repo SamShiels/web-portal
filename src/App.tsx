@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import PublishedPapers from "./components/PublishedPapers";
 
 const ALLOWED_TYPE = "application/pdf";
 
@@ -93,6 +94,7 @@ const App = () => {
         </div>
         <p className="upload-status">{status ?? "No file selected yet."}</p>
       </section>
+      <PublishedPapers />
     </div>
   );
 };
