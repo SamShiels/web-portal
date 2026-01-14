@@ -582,6 +582,10 @@ body {
   background: var(--highlight);
 }
 
+.paper-pdf-inline {
+  margin-top: 0;
+}
+
 .paper-viewer {
   display: grid;
   gap: 24px;
@@ -628,9 +632,17 @@ body {
   color: var(--muted);
 }
 
+.paper-viewer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .paper-viewer-body {
   display: grid;
   gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: start;
 }
 
 .paper-viewer-card {
@@ -654,6 +666,69 @@ body {
   line-height: 1.6;
 }
 
+.paper-rating-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 18px 20px;
+  border-radius: 24px;
+  border: 2px solid rgba(47, 43, 37, 0.28);
+  background: linear-gradient(125deg, #f6c37c 0%, #f68787 50%, #7cc5d9 100%);
+  color: #1d1c1a;
+  box-shadow: 0 14px 26px rgba(29, 28, 26, 0.14);
+}
+
+.paper-rating-main h2 {
+  margin: 6px 0 4px;
+}
+
+.paper-rating-value {
+  font-family: "Fraunces", "Times New Roman", serif;
+  font-size: 2rem;
+}
+
+.paper-rating-meta {
+  margin: 0;
+  font-weight: 600;
+  color: #2f2b25;
+}
+
+.paper-rating-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.paper-rating-pill {
+  min-width: 150px;
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 14px;
+  border: 1px solid rgba(47, 43, 37, 0.22);
+  padding: 10px 12px;
+  display: grid;
+  gap: 2px;
+  box-shadow: 0 8px 14px rgba(29, 28, 26, 0.12);
+}
+
+.paper-rating-pill-empty {
+  background: rgba(255, 255, 255, 0.6);
+  border-style: dashed;
+  color: #2f2b25;
+}
+
+.rating-pill-score {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.rating-pill-label {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
 .paper-viewer-placeholder {
   margin: 0;
   color: var(--muted);
@@ -675,9 +750,60 @@ body {
   color: var(--ink);
 }
 
+.impact-card {
+  border: 2px solid rgba(47, 43, 37, 0.26);
+  background: linear-gradient(180deg, #fffdfa 0%, #fff6eb 100%);
+}
+
+.impact-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.impact-score-badge {
+  background: rgba(201, 106, 72, 0.2);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 700;
+  border: 1px solid rgba(47, 43, 37, 0.18);
+}
+
+.impact-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.impact-item {
+  border-radius: 14px;
+  border: 1px solid rgba(47, 43, 37, 0.12);
+  background: rgba(255, 255, 255, 0.86);
+  padding: 12px 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.impact-label {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.impact-copy {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .llm-areas {
   display: grid;
   gap: 20px;
+}
+
+.compliance-card {
+  grid-column: 1 / -1;
 }
 
 .llm-area h3 {
@@ -949,6 +1075,14 @@ body {
 
   .papers-page-status {
     text-align: center;
+  }
+
+  .paper-rating-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .paper-rating-pills {
+    justify-content: flex-start;
   }
 }
 

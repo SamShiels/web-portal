@@ -88,6 +88,18 @@ const PaperViewer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedRules, setExpandedRules] = useState<Set<number>>(new Set());
+  const rulesForPaper = useMemo(() => {
+    const typeKey = paper?.paperType?.toLowerCase() || "";
+    return RULESETS[typeKey] || [];
+  }, [paper?.paperType]);
+  const ruleAreaLookup = useMemo(
+    () =>
+      rulesForPaper.reduce<Record<string, string>>((acc, rule) => {
+        acc[String(rule.id)] = rule.area;
+        return acc;
+      }, {}),
+    [rulesForPaper]
+  );
 
   const toggleRule = (ruleId: number) => {
     setExpandedRules((prev) => {
@@ -151,15 +163,56 @@ const PaperViewer = () => {
 
   // Grouping logic for the Ruleset
   const groupedRules = useMemo(() => {
-    const typeKey = paper?.paperType?.toLowerCase() || "";
-    const rules = RULESETS[typeKey] || [];
-    
-    return rules.reduce<Record<string, typeof rules>>((acc, rule) => {
+    return rulesForPaper.reduce<Record<string, typeof rulesForPaper>>((acc, rule) => {
       if (!acc[rule.area]) acc[rule.area] = [];
       acc[rule.area].push(rule);
       return acc;
     }, {});
-  }, [paper?.paperType]);
+  }, [rulesForPaper]);
+
+  const categoryAverages = useMemo(() => {
+    if (!llmMetrics || rulesForPaper.length === 0) return [];
+
+    const bucket: Record<string, number[]> = {};
+
+    Object.values(llmMetrics).forEach((group) => {
+      Object.entries(group).forEach(([ruleId, metric]) => {
+        const area = ruleAreaLookup[ruleId];
+        if (!area || typeof metric?.rating !== "number") return;
+        if (!bucket[area]) bucket[area] = [];
+        bucket[area].push(metric.rating);
+      });
+    });
+
+    return Object.entries(bucket).map(([area, ratings]) => ({
+      area,
+      average: ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
+    }));
+  }, [llmMetrics, ruleAreaLookup, rulesForPaper]);
+
+  const sortedCategoryAverages = useMemo(
+    () => [...categoryAverages].sort((a, b) => b.average - a.average),
+    [categoryAverages]
+  );
+
+  const overallCategoryAverage = useMemo(() => {
+    if (categoryAverages.length === 0) return null;
+    const total = categoryAverages.reduce((sum, { average }) => sum + average, 0);
+    return Math.round((total / categoryAverages.length) * 10) / 10;
+  }, [categoryAverages]);
+
+  const impactScoreOutOfFive = useMemo(() => {
+    const rawImpact = llmSummary?.synthesis_summary?.impact;
+    if (rawImpact === undefined || rawImpact === null) return null;
+
+    const numericImpact =
+      typeof rawImpact === "string" ? parseFloat(rawImpact) : Number(rawImpact);
+
+    if (Number.isNaN(numericImpact)) return null;
+
+    const normalized = numericImpact > 5 ? numericImpact / 2 : numericImpact;
+    return Math.round(normalized * 10) / 10;
+  }, [llmSummary?.synthesis_summary?.impact]);
 
   if (isLoading) {
     return (
@@ -209,27 +262,104 @@ const PaperViewer = () => {
           </div>
         </header>
 
+        <div className="paper-viewer-actions">
+          {downloadUrl ? (
+            <a className="paper-pdf paper-pdf-inline" href={downloadUrl} target="_blank" rel="noreferrer">
+              PDF
+            </a>
+          ) : (
+            <p className="paper-viewer-placeholder">PDF source unavailable.</p>
+          )}
+        </div>
+
+        <div className="paper-rating-hero">
+          <div className="paper-rating-main">
+            <p className="eyebrow">Ratings pulse</p>
+            <h2 className="paper-rating-value">
+              {overallCategoryAverage !== null ? `${overallCategoryAverage.toFixed(1)} / 10` : "Awaiting ratings"}
+            </h2>
+            <p className="paper-rating-meta">
+              {categoryAverages.length > 0
+                ? `Averaged across ${categoryAverages.length} categories`
+                : "Ratings will appear here once the judges weigh in."}
+            </p>
+          </div>
+          <div className="paper-rating-pills">
+            {sortedCategoryAverages.length === 0 ? (
+              <div className="paper-rating-pill paper-rating-pill-empty">
+                <span className="rating-pill-label">No category scores yet</span>
+              </div>
+            ) : (
+              sortedCategoryAverages.map(({ area, average }) => (
+                <div key={area} className="paper-rating-pill">
+                  <span className="rating-pill-score">{average.toFixed(1)}</span>
+                  <span className="rating-pill-label">{area}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
         <div className="paper-viewer-body">
           {/* 1. Synthesis Summary Section */}
-          <div className="paper-viewer-card">
+          <div className="paper-viewer-card synthesis-card">
             <h2>Synthesis Summary</h2>
             {llmSummary?.synthesis_summary ? (
               <div className="llm-summary">
-                <p>{llmSummary.synthesis_summary.overview}</p>
+                {llmSummary.synthesis_summary.overview && (
+                  <p>{llmSummary.synthesis_summary.overview}</p>
+                )}
                 {llmSummary.synthesis_summary.feedback && (
                   <p><strong>Feedback:</strong> {llmSummary.synthesis_summary.feedback}</p>
                 )}
-                <p className="llm-impact">
-                  Consensus Impact Score: {llmSummary.synthesis_summary.impact}/10
-                </p>
               </div>
             ) : (
               <p className="paper-viewer-placeholder">Analysis results are being processed...</p>
             )}
           </div>
 
-          {/* 2. Detailed Guidelines Matrix */}
-          <div className="paper-viewer-card">
+          {/* 2. Impact Components */}
+          <div className="paper-viewer-card impact-card">
+            <div className="impact-card-header">
+              <h2>Impact Breakdown</h2>
+              {impactScoreOutOfFive !== null ? (
+                <span className="impact-score-badge">{impactScoreOutOfFive.toFixed(1)} / 5</span>
+              ) : null}
+            </div>
+            {llmSummary?.synthesis_summary ? (
+              <div className="impact-grid">
+                {llmSummary.synthesis_summary.common_themes && (
+                  <div className="impact-item">
+                    <p className="impact-label">Common themes</p>
+                    <p className="impact-copy">{llmSummary.synthesis_summary.common_themes}</p>
+                  </div>
+                )}
+                {llmSummary.synthesis_summary.areas_of_agreement && (
+                  <div className="impact-item">
+                    <p className="impact-label">Areas of agreement</p>
+                    <p className="impact-copy">{llmSummary.synthesis_summary.areas_of_agreement}</p>
+                  </div>
+                )}
+                {llmSummary.synthesis_summary.areas_of_disagreement && (
+                  <div className="impact-item">
+                    <p className="impact-label">Areas of disagreement</p>
+                    <p className="impact-copy">{llmSummary.synthesis_summary.areas_of_disagreement}</p>
+                  </div>
+                )}
+                {llmSummary.synthesis_summary.impact && (
+                  <div className="impact-item">
+                    <p className="impact-label">Impact rationale</p>
+                    <p className="impact-copy">{llmSummary.synthesis_summary.impact}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="paper-viewer-placeholder">Impact components will appear once processed.</p>
+            )}
+          </div>
+
+          {/* 3. Downloads Section */}
+          <div className="paper-viewer-card compliance-card">
             <h2>Compliance Checklist</h2>
             <div className="llm-areas">
               {Object.keys(groupedRules).length === 0 ? (
@@ -298,17 +428,6 @@ const PaperViewer = () => {
             </div>
           </div>
 
-          {/* 3. Downloads Section */}
-          <div className="paper-viewer-card">
-            <h2>Resources</h2>
-            {downloadUrl ? (
-              <a className="paper-pdf" href={downloadUrl} target="_blank" rel="noreferrer">
-                Download Original PDF
-              </a>
-            ) : (
-              <p className="paper-viewer-placeholder">PDF source unavailable.</p>
-            )}
-          </div>
         </div>
       </section>
     </div>
