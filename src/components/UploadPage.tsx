@@ -140,7 +140,7 @@ const UploadPage = () => {
             required
           />
           <label className="upload-label" htmlFor="paper-type">
-            Paper type
+            Checklist type
           </label>
           <select id="paper-type" name="paperType" className="paper-select" defaultValue="" required>
             <option value="" disabled>

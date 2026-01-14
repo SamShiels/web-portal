@@ -348,7 +348,7 @@ const PaperViewer = () => {
                 )}
               </div>
             ) : (
-              <p className="paper-viewer-placeholder">Impact components will appear once processed.</p>
+              <p className="paper-viewer-placeholder">Impact components will appear once processed...</p>
             )}
           </div>
 
@@ -356,7 +356,7 @@ const PaperViewer = () => {
           <div className="paper-viewer-card compliance-card">
             <h2>Compliance Checklist</h2>
             {!paper?.reviewText ? (
-              <p className="paper-viewer-placeholder">Compliance checklist will appear once processed.</p>
+              <p className="paper-viewer-placeholder">Compliance checklist will appear once processed...</p>
             ) : (
               <div className="llm-areas">
                 {Object.keys(groupedRules).length === 0 ? (
