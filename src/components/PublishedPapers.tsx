@@ -10,7 +10,7 @@ type UiPaper = {
   title: string;
   authors: string;
   detailUrl: string;
-  dif: number;
+  impactFactor: number | null;
 };
 
 type PapersListProps = {
@@ -116,9 +116,8 @@ const PapersList = ({ papers, accessToken }: PapersListProps) => {
                 />
               </div>
               <div className="paper-meta">
-                <Link className="paper-dif" to={paper.detailUrl}>
-                  DIF: {paper.dif}
-                </Link>
+                <div className="paper-dif">
+                </div>
                 <div className="paper-actions">
                   <a className="paper-action" href="#">
                     Like
@@ -179,14 +178,17 @@ const PublishedPapers = () => {
             .map((paper: Paper) => {
               const title = paper.name ?? "Untitled paper";
               const authors = paper.authors?.join(", ") ?? "Unknown authors";
-              const dif = Math.round((paper.overallRating ?? 0) * 20);
+              const impactFactor =
+                paper.overallRating !== undefined && paper.overallRating !== null
+                  ? Math.round(paper.overallRating * 20)
+                  : null;
 
             return {
               id: paper.paperId,
               title,
               authors,
               detailUrl: `/papers/${paper.paperId}`,
-              dif
+              impactFactor
             };
           });
           setPapers(mapped);
