@@ -565,6 +565,14 @@ body {
   color: var(--muted);
 }
 
+.paper-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
 .paper-pdf {
   justify-self: start;
   border: 2px solid var(--border);

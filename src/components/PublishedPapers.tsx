@@ -100,13 +100,33 @@ const PapersList = ({ papers, accessToken }: PapersListProps) => {
                   {paper.title}
                 </Link>
                 <p className="paper-authors">{paper.authors}</p>
-                <button
-                  className="paper-pdf"
-                  type="button"
-                  onClick={() => handleDownload(paper.id)}
-                >
-                  PDF
-                </button>
+                <div className="paper-actions-row">
+                  <button
+                    className="paper-pdf paper-pdf-inline"
+                    type="button"
+                    onClick={() => handleDownload(paper.id)}
+                  >
+                    PDF
+                  </button>
+                  <div className="paper-actions">
+                    <a className="paper-action" href="#">
+                      Like
+                    </a>
+                    <a
+                      className="paper-action"
+                      href="#"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setOpenCommentId(isOpen ? null : paper.id);
+                      }}
+                    >
+                      Comment
+                    </a>
+                    <a className="paper-action" href="#">
+                      Share
+                    </a>
+                  </div>
+                </div>
 
                 <CommentThread
                   isOpen={isOpen}
@@ -114,28 +134,6 @@ const PapersList = ({ papers, accessToken }: PapersListProps) => {
                   commentId={`comment-${paper.id}`}
                   onToggle={() => setOpenCommentId(isOpen ? null : paper.id)}
                 />
-              </div>
-              <div className="paper-meta">
-                <div className="paper-dif">
-                </div>
-                <div className="paper-actions">
-                  <a className="paper-action" href="#">
-                    Like
-                  </a>
-                  <a
-                    className="paper-action"
-                    href="#"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      setOpenCommentId(isOpen ? null : paper.id);
-                    }}
-                  >
-                    Comment
-                  </a>
-                  <a className="paper-action" href="#">
-                    Share
-                  </a>
-                </div>
               </div>
             </article>
           );
