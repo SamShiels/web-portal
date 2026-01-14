@@ -195,6 +195,28 @@ const PaperViewer = () => {
     [categoryAverages]
   );
 
+  const judgeAverages = useMemo(() => {
+    if (!llmMetrics) return [];
+
+    return Object.entries(llmMetrics).map(([judgeKey, opinions], idx) => {
+      const ratings = Object.values(opinions)
+        .map((item) => item?.rating)
+        .filter((rating): rating is number => typeof rating === "number");
+
+      const average =
+        ratings.length === 0
+          ? null
+          : Math.round((ratings.reduce((sum, value) => sum + value, 0) / ratings.length) * 10) / 10;
+
+      return {
+        judgeKey,
+        average,
+        label: JUDGE_LABELS[idx] ?? `Judge ${idx + 1}`,
+        avatar: JUDGE_AVATARS[idx % JUDGE_AVATARS.length]
+      };
+    });
+  }, [llmMetrics]);
+
   const overallCategoryAverage = useMemo(() => {
     if (categoryAverages.length === 0) return null;
     const total = categoryAverages.reduce((sum, { average }) => sum + average, 0);
@@ -253,9 +275,6 @@ const PaperViewer = () => {
             <p className="paper-viewer-authors">{paper.authors?.join(", ") || "Anonymous"}</p>
           </div>
           <div className="paper-viewer-meta">
-            <span className="paper-viewer-dif">
-              Impact Factor: {paper.overallRating ? Math.round(paper.overallRating * 20) : "—"}
-            </span>
             <span className="paper-viewer-date">
               {paper.uploadedAt ? new Date(paper.uploadedAt).toLocaleDateString() : "Date Pending"}
             </span>
@@ -298,6 +317,161 @@ const PaperViewer = () => {
               ))
             )}
           </div>
+        </div>
+
+        {/* 3. Downloads Section */}
+        <div className="paper-viewer-card metrics-card">
+          <div className="metrics-header">
+            <div>
+              <p className="eyebrow">Visual pulse</p>
+              <h2>Judge Metrics</h2>
+            </div>
+            {overallCategoryAverage !== null ? (
+              <div className="metrics-donut">
+                <div
+                  className="metrics-donut-ring"
+                  aria-hidden
+                  style={{
+                    background: `conic-gradient(var(--accent) ${(overallCategoryAverage / 5) * 360}deg, rgba(47, 43, 37, 0.08) 0)`
+                  }}
+                />
+                <div className="metrics-donut-center">
+                  <span>{overallCategoryAverage.toFixed(1)}</span>
+                  <small>/5 avg</small>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          {categoryAverages.length === 0 ? (
+            <p className="paper-viewer-placeholder">Graphs will appear once ratings arrive.</p>
+          ) : (
+            <div className="metrics-grid">
+              <div className="metric-block">
+                <div className="metric-block-header">
+                  <h3>Category highs</h3>
+                  <span className="metric-note">Scaled to 5</span>
+                </div>
+                <div className="metrics-bars">
+                  {sortedCategoryAverages.slice(0, 6).map(({ area, average }) => (
+                    <div key={area} className="metrics-bar-row">
+                      <span className="metrics-bar-label">{area}</span>
+                      <div className="metrics-bar-rail" aria-hidden>
+                        <div
+                          className="metrics-bar-fill"
+                          style={{ width: `${Math.min(average / 5, 1) * 100}%` }}
+                        />
+                      </div>
+                      <span className="metrics-bar-value">{average.toFixed(1)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="metric-block">
+                <div className="metric-block-header">
+                  <h3>Judge alignment</h3>
+                  <span className="metric-note">Average per judge</span>
+                </div>
+                <div className="metrics-judge-list">
+                  {judgeAverages.map((judge, idx) => (
+                    <div key={judge.judgeKey ?? idx} className="metrics-judge-row">
+                      <div className="metrics-judge-meta">
+                        <img
+                          className="metrics-judge-avatar"
+                          src={judge.avatar}
+                          alt={`${judge.label} avatar`}
+                        />
+                        <div>
+                          <p className="metrics-judge-name">{judge.label}</p>
+                          <p className="metrics-judge-score">
+                            {judge.average !== null ? `${judge.average.toFixed(1)} / 5` : "—"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="metrics-judge-bar" aria-hidden>
+                        <div
+                          className="metrics-judge-bar-fill"
+                          style={{ width: `${Math.min((judge.average ?? 0) / 5, 1) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  {judgeAverages.length === 0 ? (
+                    <p className="paper-viewer-placeholder">Awaiting judge-level scores.</p>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="metric-block metric-spark">
+                <div className="metric-block-header">
+                  <h3>Category curve</h3>
+                  <span className="metric-note">Shape of ratings</span>
+                </div>
+                <svg viewBox="0 0 200 80" role="img" aria-label="Category rating sparkline">
+                  <defs>
+                    <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.05" />
+                    </linearGradient>
+                  </defs>
+                  {sortedCategoryAverages.length > 0 ? (
+                    <>
+                      <path
+                        d={(() => {
+                          const values = sortedCategoryAverages.map((item) => item.average);
+                          const max = Math.max(...values, 5);
+                          const min = 0;
+                          const step = values.length > 1 ? 200 / (values.length - 1) : 200;
+
+                          return values
+                            .map((value, index) => {
+                              const x = step * index;
+                              const y = 70 - ((value - min) / (max - min || 1)) * 60;
+                              return `${index === 0 ? "M" : "L"} ${x} ${y}`;
+                            })
+                            .join(" ");
+                        })()}
+                        fill="none"
+                        stroke="var(--accent)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d={(() => {
+                          const values = sortedCategoryAverages.map((item) => item.average);
+                          const max = Math.max(...values, 5);
+                          const min = 0;
+                          const step = values.length > 1 ? 200 / (values.length - 1) : 200;
+
+                          const points = values
+                            .map((value, index) => {
+                              const x = step * index;
+                              const y = 70 - ((value - min) / (max - min || 1)) * 60;
+                              return `${x},${y}`;
+                            })
+                            .join(" ");
+
+                          return `M 0 80 L ${points} L 200 80 Z`;
+                        })()}
+                        fill="url(#sparklineGradient)"
+                        stroke="none"
+                      />
+                    </>
+                  ) : null}
+                </svg>
+                <div className="metric-spark-legend">
+                  <span>Peak: {sortedCategoryAverages[0]?.average.toFixed(1) ?? "—"}</span>
+                  <span>
+                    Median:{" "}
+                    {sortedCategoryAverages.length > 0
+                      ? sortedCategoryAverages[Math.floor(sortedCategoryAverages.length / 2)]?.average.toFixed(1)
+                      : "—"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="paper-viewer-body">
@@ -352,7 +526,7 @@ const PaperViewer = () => {
             )}
           </div>
 
-          {/* 3. Downloads Section */}
+          {/* 4. Downloads Section */}
           <div className="paper-viewer-card compliance-card">
             <h2>Compliance Checklist</h2>
             {!paper?.reviewText ? (
