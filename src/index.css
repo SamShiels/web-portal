@@ -668,6 +668,146 @@ body {
   line-height: 1.6;
 }
 
+.chat-card {
+  grid-column: 1 / -1;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.chat-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  border-radius: 999px;
+  border: 1px solid rgba(47, 43, 37, 0.2);
+  padding: 6px 12px;
+  background: #fff6eb;
+}
+
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(47, 43, 37, 0.2);
+  background: #fffdf8;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.chat-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.chat-bubble {
+  padding: 10px 12px;
+  border-radius: 14px;
+  max-width: 80%;
+  background: #fff;
+  border: 1px solid rgba(47, 43, 37, 0.18);
+  box-shadow: 0 10px 20px rgba(29, 28, 26, 0.08);
+  color: var(--ink);
+  display: grid;
+  gap: 6px;
+}
+
+.chat-bubble p {
+  margin: 0;
+  color: inherit;
+}
+
+.chat-bubble-user {
+  align-self: flex-end;
+  background: var(--highlight);
+  border-color: rgba(47, 43, 37, 0.25);
+}
+
+.chat-bubble-assistant {
+  align-self: flex-start;
+}
+
+.chat-bubble-pending {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.chat-bubble-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.chat-form {
+  display: grid;
+  gap: 10px;
+}
+
+.chat-label {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.chat-input {
+  width: 100%;
+  border-radius: 16px;
+  border: 2px solid rgba(47, 43, 37, 0.35);
+  padding: 12px 14px;
+  font-family: inherit;
+  resize: vertical;
+  background: #fff;
+}
+
+.chat-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.chat-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.chat-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.chat-send {
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chat-send:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.chat-error {
+  margin: 0;
+  color: #9b1c1c;
+  font-size: 0.9rem;
+}
+
 .paper-rating-hero {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);

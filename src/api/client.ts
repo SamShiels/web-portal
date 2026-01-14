@@ -57,6 +57,17 @@ export type LlmMetricsResponse = {
   };
 };
 
+export type ChatMessage = {
+  role: "user" | "assistant" | "system";
+  content: string;
+};
+
+export type ChatRequest = {
+  query: string;
+};
+
+export type ChatResponse = string | { response?: string; output?: string; message?: string };
+
 const getApiBaseUrl = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
 
@@ -118,3 +129,14 @@ export const getPaper = (paperId: string, accessToken?: string) =>
 
 export const getDownloadUrl = (paperId: string, accessToken?: string) =>
   apiRequest<DownloadUrlResponse>(`/papers/${paperId}/download`, { method: "GET" }, accessToken);
+
+export const sendChat = (payload: ChatRequest, accessToken?: string) =>
+  apiRequest<ChatResponse>(
+    "/query",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    },
+    accessToken
+  );

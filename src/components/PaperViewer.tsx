@@ -1,7 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "react-oidc-context";
 import { Link, useParams } from "react-router-dom";
-import { getDownloadUrl, getPaper, type LlmMetricsResponse, type Paper } from "../api/client";
+import {
+  getDownloadUrl,
+  getPaper,
+  type LlmMetricsResponse,
+  type Paper
+} from "../api/client";
+import ReviewerChat, { type ChatThreadMessage } from "./ReviewerChat";
 import Skeleton from "./Skeleton";
 
 /** 
@@ -76,7 +82,6 @@ const RULESETS: Record<string, Array<{ id: number; area: string; rule: string }>
 
 const JUDGE_AVATARS = ["/bot1.png", "/bot2.png", "/bot3.png"];
 const JUDGE_LABELS = ["Chirpy bot", "Brainy Brian", "Chatty Mcchatface"];
-
 const PaperViewer = () => {
   const auth = useAuth();
   const { paperId } = useParams();
@@ -88,6 +93,10 @@ const PaperViewer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedRules, setExpandedRules] = useState<Set<number>>(new Set());
+  const [chatMessages, setChatMessages] = useState<ChatThreadMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatError, setChatError] = useState<string | null>(null);
+  const [isChatting, setIsChatting] = useState(false);
   const rulesForPaper = useMemo(() => {
     const typeKey = paper?.paperType?.toLowerCase() || "";
     return RULESETS[typeKey] || [];
@@ -602,6 +611,17 @@ const PaperViewer = () => {
             )}
           </div>
 
+          <ReviewerChat
+            messages={chatMessages}
+            setMessages={setChatMessages}
+            input={chatInput}
+            setInput={setChatInput}
+            error={chatError}
+            setError={setChatError}
+            isChatting={isChatting}
+            setIsChatting={setIsChatting}
+            accessToken={auth.user?.id_token}
+          />
         </div>
       </section>
     </div>
