@@ -64,7 +64,7 @@ export type ChatMessage = {
 
 export type ChatRequest = {
   query: string;
-  reviewUri?: string | LlmMetricsResponse;
+  reviewText?: string | LlmMetricsResponse;
   history: Array<{ role: ChatMessage["role"]; content: Array<{ text: string }> }>;
 };
 

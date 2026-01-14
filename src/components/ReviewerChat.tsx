@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LlmMetricsResponse, sendChat } from "../api/client";
 
 export type ChatThreadMessage = {
@@ -18,7 +18,7 @@ type ReviewerChatProps = {
   isChatting: boolean;
   setIsChatting: React.Dispatch<React.SetStateAction<boolean>>;
   accessToken?: string;
-  reviewUri?: string | LlmMetricsResponse;
+  reviewText?: string | LlmMetricsResponse;
 };
 
 const createChatId = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -33,8 +33,9 @@ const ReviewerChat = ({
   isChatting,
   setIsChatting,
   accessToken,
-  reviewUri
+  reviewText
 }: ReviewerChatProps) => {
+  const [isOpen, setIsOpen] = useState(false);
   const chatThreadRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -71,7 +72,7 @@ const ReviewerChat = ({
       const response = await sendChat(
         {
           query: trimmed,
-          reviewUri,
+          reviewText,
           history: historyPayload
         },
         accessToken
@@ -109,66 +110,87 @@ const ReviewerChat = ({
   };
 
   return (
-    <div className="paper-viewer-card chat-card">
-      <div className="chat-header">
-        <div>
-          <p className="eyebrow">Ask the desk</p>
-          <h2>Reviewer Chat</h2>
-        </div>
-        <span className="chat-status">{isChatting ? "Drafting response..." : "Live"}</span>
-      </div>
-      <div className="chat-thread" ref={chatThreadRef}>
-        {messages.length === 0 ? (
-          <p className="chat-empty">
-            Ask for a recap, compliance help, or improvements to the draft.
-          </p>
-        ) : null}
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`chat-bubble ${
-              message.role === "user" ? "chat-bubble-user" : "chat-bubble-assistant"
-            }`}
-          >
-            <p>{message.content}</p>
-            <span className="chat-bubble-meta">
-              {message.role === "user" ? "You" : "Reviewer"} ·{" "}
-              {new Date(message.sentAt).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit"
-              })}
-            </span>
+    <div className={`chat-popup ${isOpen ? "is-open" : "is-closed"}`}>
+      <button
+        type="button"
+        className="chat-toggle"
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-expanded={isOpen}
+        aria-controls="reviewer-chat-panel"
+      >
+        <span>Reviewer Chat</span>
+        <span className="chat-toggle-meta">
+          {isChatting ? "Drafting..." : isOpen ? "Collapse" : "Expand"}
+        </span>
+      </button>
+
+      <div
+        id="reviewer-chat-panel"
+        className={`chat-panel ${isOpen ? "is-open" : "is-closed"}`}
+        aria-hidden={!isOpen}
+      >
+        <button
+          type="button"
+          className="chat-header"
+          onClick={() => setIsOpen(false)}
+          aria-expanded={isOpen}
+        >
+          <div>
+            <p className="eyebrow">Ask the desk</p>
+            <h2>Reviewer Chat</h2>
           </div>
-        ))}
-        {isChatting ? (
-          <div className="chat-bubble chat-bubble-assistant chat-bubble-pending">
-            <p>Thinking through the paper...</p>
-          </div>
-        ) : null}
-      </div>
-      <form className="chat-form" onSubmit={handleSubmit}>
-        <label className="chat-label" htmlFor="paper-chat-input">
-          Send a note to the reviewers
-        </label>
-        <textarea
-          id="paper-chat-input"
-          className="chat-input"
-          rows={3}
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          placeholder="Ask about compliance gaps, rewrite ideas, or key takeaways..."
-          disabled={isChatting}
-        />
-        {error ? <p className="chat-error">{error}</p> : null}
-        <div className="chat-controls">
-          <p className="chat-hint">
-            Chat history is sent with each request to the Lambda backend.
-          </p>
-          <button className="chat-send" type="submit" disabled={isChatting || !input.trim()}>
-            {isChatting ? "Sending..." : "Send"}
-          </button>
+          <span className="chat-status">{isChatting ? "Drafting response..." : "Live"}</span>
+        </button>
+        <div className="chat-thread" ref={chatThreadRef}>
+          {messages.length === 0 ? (
+            <p className="chat-empty">
+              Ask for a recap, compliance help, or improvements to the draft.
+            </p>
+          ) : null}
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`chat-bubble ${
+                message.role === "user" ? "chat-bubble-user" : "chat-bubble-assistant"
+              }`}
+            >
+              <p>{message.content}</p>
+              <span className="chat-bubble-meta">
+                {message.role === "user" ? "You" : "Reviewer"} ·{" "}
+                {new Date(message.sentAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit"
+                })}
+              </span>
+            </div>
+          ))}
+          {isChatting ? (
+            <div className="chat-bubble chat-bubble-assistant chat-bubble-pending">
+              <p>Thinking through the paper...</p>
+            </div>
+          ) : null}
         </div>
-      </form>
+        <form className="chat-form" onSubmit={handleSubmit}>
+          <label className="chat-label" htmlFor="paper-chat-input">
+            Send a note to the reviewers
+          </label>
+          <textarea
+            id="paper-chat-input"
+            className="chat-input"
+            rows={3}
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            placeholder="Ask about compliance gaps, rewrite ideas, or key takeaways..."
+            disabled={isChatting}
+          />
+          {error ? <p className="chat-error">{error}</p> : null}
+          <div className="chat-controls">
+            <button className="chat-send" type="submit" disabled={isChatting || !input.trim()}>
+              {isChatting ? "Sending..." : "Send"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
