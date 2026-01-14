@@ -276,7 +276,7 @@ const PaperViewer = () => {
           <div className="paper-rating-main">
             <p className="eyebrow">Ratings pulse</p>
             <h2 className="paper-rating-value">
-              {overallCategoryAverage !== null ? `${overallCategoryAverage.toFixed(1)} / 10` : "Awaiting ratings"}
+              {overallCategoryAverage !== null ? `${overallCategoryAverage.toFixed(1)} / 5` : "Awaiting ratings"}
             </h2>
             <p className="paper-rating-meta">
               {categoryAverages.length > 0
@@ -312,6 +312,18 @@ const PaperViewer = () => {
                 {llmSummary.synthesis_summary.feedback && (
                   <p><strong>Feedback:</strong> {llmSummary.synthesis_summary.feedback}</p>
                 )}
+                {llmSummary.synthesis_summary.areas_of_agreement && (
+                  <div className="impact-item">
+                    <p className="impact-label">Areas of agreement</p>
+                    <p className="impact-copy">{llmSummary.synthesis_summary.areas_of_agreement}</p>
+                  </div>
+                )}
+                {llmSummary.synthesis_summary.areas_of_disagreement && (
+                  <div className="impact-item">
+                    <p className="impact-label">Areas of disagreement</p>
+                    <p className="impact-copy">{llmSummary.synthesis_summary.areas_of_disagreement}</p>
+                  </div>
+                )}
               </div>
             ) : (
               <p className="paper-viewer-placeholder">Analysis results are being processed...</p>
@@ -328,28 +340,10 @@ const PaperViewer = () => {
             </div>
             {llmSummary?.synthesis_summary ? (
               <div className="impact-grid">
-                {llmSummary.synthesis_summary.common_themes && (
-                  <div className="impact-item">
-                    <p className="impact-label">Common themes</p>
-                    <p className="impact-copy">{llmSummary.synthesis_summary.common_themes}</p>
-                  </div>
-                )}
-                {llmSummary.synthesis_summary.areas_of_agreement && (
-                  <div className="impact-item">
-                    <p className="impact-label">Areas of agreement</p>
-                    <p className="impact-copy">{llmSummary.synthesis_summary.areas_of_agreement}</p>
-                  </div>
-                )}
-                {llmSummary.synthesis_summary.areas_of_disagreement && (
-                  <div className="impact-item">
-                    <p className="impact-label">Areas of disagreement</p>
-                    <p className="impact-copy">{llmSummary.synthesis_summary.areas_of_disagreement}</p>
-                  </div>
-                )}
-                {llmSummary.synthesis_summary.impact && (
+                {llmSummary.synthesis_summary.impact_rating_explanation && (
                   <div className="impact-item">
                     <p className="impact-label">Impact rationale</p>
-                    <p className="impact-copy">{llmSummary.synthesis_summary.impact}</p>
+                    <p className="impact-copy">{llmSummary.synthesis_summary.impact_rating_explanation}</p>
                   </div>
                 )}
               </div>
@@ -361,71 +355,75 @@ const PaperViewer = () => {
           {/* 3. Downloads Section */}
           <div className="paper-viewer-card compliance-card">
             <h2>Compliance Checklist</h2>
-            <div className="llm-areas">
-              {Object.keys(groupedRules).length === 0 ? (
-                <p className="paper-viewer-placeholder">No rulesets found for type: {paper.paperType}</p>
-              ) : (
-                Object.entries(groupedRules).map(([area, rules]) => (
-                  <div key={area} className="llm-area">
-                    <h3>{area}</h3>
-                    <ol className="llm-area-rules">
-                      {rules.map((rule) => {
-                        const isOpen = expandedRules.has(rule.id);
+            {!paper?.reviewText ? (
+              <p className="paper-viewer-placeholder">Compliance checklist will appear once processed.</p>
+            ) : (
+              <div className="llm-areas">
+                {Object.keys(groupedRules).length === 0 ? (
+                  <p className="paper-viewer-placeholder">No rulesets found for type: {paper.paperType}</p>
+                ) : (
+                  Object.entries(groupedRules).map(([area, rules]) => (
+                    <div key={area} className="llm-area">
+                      <h3>{area}</h3>
+                      <ol className="llm-area-rules">
+                        {rules.map((rule) => {
+                          const isOpen = expandedRules.has(rule.id);
 
-                        return (
-                          <li key={rule.id} className="llm-area-rule">
-                            <button
-                              type="button"
-                              className="llm-rule-toggle"
-                              onClick={() => toggleRule(rule.id)}
-                              aria-expanded={isOpen}
-                            >
-                              <span className="llm-rule-title">
-                                {rule.rule}
-                              </span>
-                              <span className="llm-rule-chevron">{isOpen ? "−" : "+"}</span>
-                            </button>
+                          return (
+                            <li key={rule.id} className="llm-area-rule">
+                              <button
+                                type="button"
+                                className="llm-rule-toggle"
+                                onClick={() => toggleRule(rule.id)}
+                                aria-expanded={isOpen}
+                              >
+                                <span className="llm-rule-title">
+                                  {rule.rule}
+                                </span>
+                                <span className="llm-rule-chevron">{isOpen ? "−" : "+"}</span>
+                              </button>
 
-                            {isOpen ? (
-                              <div className="llm-judge-opinions">
-                                {llmMetrics &&
-                                  Object.entries(llmMetrics).map(([, opinions], idx) => {
-                                    const opinion = opinions[String(rule.id)];
-                                    const label = JUDGE_LABELS[idx] ?? `Judge ${idx + 1}`;
-                                    const avatar = JUDGE_AVATARS[idx % JUDGE_AVATARS.length];
+                              {isOpen ? (
+                                <div className="llm-judge-opinions">
+                                  {llmMetrics &&
+                                    Object.entries(llmMetrics).map(([, opinions], idx) => {
+                                      const opinion = opinions[String(rule.id)];
+                                      const label = JUDGE_LABELS[idx] ?? `Judge ${idx + 1}`;
+                                      const avatar = JUDGE_AVATARS[idx % JUDGE_AVATARS.length];
 
-                                    return (
-                                      <div key={label} className="llm-judge-opinion">
-                                        <div className="llm-judge-header">
-                                          <img
-                                            className="llm-judge-avatar"
-                                            src={avatar}
-                                            alt={`${label} avatar`}
-                                          />
-                                          <div className="llm-judge-meta">
-                                            <p className="llm-judge-name">{label}</p>
-                                            <span className="llm-opinion-score">
-                                              Rating: {opinion?.rating ?? "—"}
-                                            </span>
+                                      return (
+                                        <div key={label} className="llm-judge-opinion">
+                                          <div className="llm-judge-header">
+                                            <img
+                                              className="llm-judge-avatar"
+                                              src={avatar}
+                                              alt={`${label} avatar`}
+                                            />
+                                            <div className="llm-judge-meta">
+                                              <p className="llm-judge-name">{label}</p>
+                                              <span className="llm-opinion-score">
+                                                Rating: {opinion?.rating ?? "—"}
+                                              </span>
+                                            </div>
                                           </div>
+                                          <p>
+                                            {opinion?.note ??
+                                              "No specific note provided for this item."}
+                                          </p>
                                         </div>
-                                        <p>
-                                          {opinion?.note ??
-                                            "No specific note provided for this item."}
-                                        </p>
-                                      </div>
-                                    );
-                                  })}
-                              </div>
-                            ) : null}
-                          </li>
-                        );
-                      })}
-                    </ol>
-                  </div>
-                ))
-              )}
-            </div>
+                                      );
+                                    })}
+                                </div>
+                              ) : null}
+                            </li>
+                          );
+                        })}
+                      </ol>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
         </div>

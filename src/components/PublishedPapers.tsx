@@ -171,6 +171,11 @@ const PublishedPapers = () => {
         if (isMounted) {
           const mapped = (response.papers ?? [])
             .filter((paper) => Boolean(paper.paperId))
+            .sort((a, b) => {
+              const dateA = new Date(a.uploadedAt ?? 0).getTime();
+              const dateB = new Date(b.uploadedAt ?? 0).getTime();
+              return dateB - dateA;
+            })
             .map((paper: Paper) => {
               const title = paper.name ?? "Untitled paper";
               const authors = paper.authors?.join(", ") ?? "Unknown authors";

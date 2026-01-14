@@ -39,19 +39,24 @@ const UploadPage = () => {
   };
 
   const handleBrowse = () => {
-    inputRef.current?.click();
+    if (inputRef.current) {
+      // Clear the value so picking the same file twice still triggers onChange
+      inputRef.current.value = "";
+      inputRef.current.click();
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
 
+    const formElement = event.currentTarget;
     if (!file) {
       setError("Please select a PDF file to upload.");
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(formElement);
     const paperName = String(formData.get("paperTitle") ?? "").trim();
     const authorsRaw = String(formData.get("paperAuthors") ?? "").trim();
     const paperType = String(formData.get("paperType") ?? "").trim();
@@ -99,7 +104,7 @@ const UploadPage = () => {
       }
 
       setStatus("Upload complete. Processing will begin shortly.");
-      event.currentTarget.reset();
+      formElement.reset();
       setFile(null);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Upload failed";
@@ -178,7 +183,14 @@ const UploadPage = () => {
                 <p className="dropzone-title">Drag and drop your file here</p>
                 <p className="dropzone-caption">or click to browse your device</p>
               </div>
-              <button type="button" className="dropzone-button" onClick={handleBrowse}>
+              <button
+                type="button"
+                className="dropzone-button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleBrowse();
+                }}
+              >
                 Browse files
               </button>
             </div>

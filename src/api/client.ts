@@ -52,6 +52,7 @@ export type LlmMetricsResponse = {
       areas_of_disagreement?: string;
       feedback?: string;
       impact?: string;
+      impact_rating_explanation?: string;
     };
   };
 };
