@@ -134,9 +134,9 @@ export const getPaper = (paperId: string, accessToken?: string) =>
 export const getDownloadUrl = (paperId: string, accessToken?: string) =>
   apiRequest<DownloadUrlResponse>(`/papers/${paperId}/download`, { method: "GET" }, accessToken);
 
-export const sendChat = (payload: ChatRequest, accessToken?: string) =>
-  apiRequest<ChatResponse>(
-    "/query",
+export const sendChat = async (payload: ChatRequest, accessToken?: string) => {
+  const response = await apiFetch(
+    "https://kt44qb6zcptpbs6nv5nz7y6gbm0gxofj.lambda-url.us-west-2.on.aws/",
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -144,3 +144,11 @@ export const sendChat = (payload: ChatRequest, accessToken?: string) =>
     },
     accessToken
   );
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Request failed");
+  }
+
+  return (await response.json()) as ChatResponse;
+};

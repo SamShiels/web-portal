@@ -90,6 +90,8 @@ const PaperViewer = () => {
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [llmSummary, setLlmSummary] = useState<LlmMetricsResponse["judge"] | null>(null);
   const [llmMetrics, setLlmMetrics] = useState<LlmMetricsResponse["llm_metrics"] | null>(null);
+  const [chatReviewText, setChatReviewText] = useState<string | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedRules, setExpandedRules] = useState<Set<number>>(new Set());
@@ -149,15 +151,23 @@ const PaperViewer = () => {
         // Parse reviewText which is a stringified JSON object in your database
         if (paperRes.reviewText) {
           try {
-            const parsed = typeof paperRes.reviewText === 'string' 
-              ? JSON.parse(paperRes.reviewText) 
+            const parsed = typeof paperRes.reviewText === "string"
+              ? JSON.parse(paperRes.reviewText)
               : paperRes.reviewText;
             
             setLlmSummary(parsed.judge ?? null);
             setLlmMetrics(parsed.llm_metrics ?? null);
+            const summary = parsed.judge?.synthesis_summary;
+            const combined = [summary?.overview, summary?.feedback]
+              .filter(Boolean)
+              .join("\n\n");
+            setChatReviewText(combined || null);
           } catch (e) {
             console.error("Error parsing LLM metrics:", e);
+            setChatReviewText(null);
           }
+        } else {
+          setChatReviewText(null);
         }
       } catch (err) {
         if (isMounted) setError(err instanceof Error ? err.message : "Load failed");
@@ -712,7 +722,7 @@ const PaperViewer = () => {
             isChatting={isChatting}
             setIsChatting={setIsChatting}
             accessToken={auth.user?.id_token}
-            reviewText={paper.reviewText}
+            reviewText={chatReviewText ?? undefined}
           />
         </div>
       </section>
